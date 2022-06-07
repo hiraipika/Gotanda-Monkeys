@@ -33,6 +33,11 @@ public class ItemShowCustomerController {
 		
 		return "index";
 	}
+	
+	/*
+	 * 商品一覧画面 表示処理
+	 */
+	
 
 	
 }
