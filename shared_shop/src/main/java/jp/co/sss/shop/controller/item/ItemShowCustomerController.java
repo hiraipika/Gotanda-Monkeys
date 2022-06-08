@@ -39,5 +39,9 @@ public class ItemShowCustomerController {
 	 */
 	
 
-	
+	@RequestMapping(path = "/item/list")
+	public String showItemAll(Model model) {
+		
+		return "item/list/item_list";
+	}
 }
