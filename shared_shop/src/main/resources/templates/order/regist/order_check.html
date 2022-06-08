@@ -2,15 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org"
         th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 <head>
-<meta charset="UTF-8">
-<title>注文内容最終確認｜システムシェアード</title>
+	<meta charset="UTF-8">
+	<title>注文内容最終確認｜システムシェアード</title>
 </head>
 <body class="main order_check">
 	<h2 class="title">注文内容最終確認</h2>
 	<div th:if="${#lists.isEmpty(orders)}">
 			<p th:text="#{orderList.none}"></p>
 	</div>
-	<table class="list_table item_detail">
+	<table class="list_table_order_check">
 		<tr>
 			<th>商品名</th>
 			<th>商品画像</th>
@@ -18,19 +18,17 @@
 			<th>数量</th>
 			<th>小計</th>
 		</tr>
-		<tr th:each="order:${orders}">
-			<td th:text="${order.name}"></td>
-			<td th:text="${order.image}"></td>
-			<td th:text="${order.price}"></td>
-			<td th:text="${order.orderNum}"></td>
-			<td th:text="${order.subtotal}"></td>
-		</tr>
+			<tr th:each="orderItem: ${orderItemBeans}">
+				<td th:text="${orderItem.name}"></td>
+				<td th:text="${orderItem.price}"></td>
+				<td th:text="${orderItem.orderNum}"></td>
+				<td th:text="${orderItem.subtotal}"></td>
+			</tr>
 		<tr>
 			<td colspan="2"></td>
 			<td>合計</td>
 			<td th:text="${total}"></td>
 		</tr>
-							
-</table>
+	</table>
 </body>
 </html>
