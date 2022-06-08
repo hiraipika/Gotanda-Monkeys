@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.UserBean;
-import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.LoginForm;
 import jp.co.sss.shop.repository.UserRepository;
 
@@ -70,9 +69,15 @@ public class LoginController {
 		} else {
 			Integer authority = ((UserBean) session.getAttribute("user")).getAuthority();
 			if (authority.intValue() == 2) {
-				User user = userRepository.findByEmail(form.getEmail());
-				model.addAttribute("user", user);
-				return "user/detail/user_detail";
+				
+				/*
+				 * User user = userRepository.findByEmail(form.getEmail());
+				 * model.addAttribute("user", user); return "user/detail/user_detail";
+				 */
+				// 一般会員ログインした場合、トップ画面に遷移
+
+				return "redirect:/";
+
 			}
 			else {
 				// 運用管理者、もしくはシステム管理者としてログインした場合、管理者用メニュー画面に遷移

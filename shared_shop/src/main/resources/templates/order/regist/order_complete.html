@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+<meta charset="UTF-8">
+<title>注文完了 | シェアードショップ</title>
+</head>
+<body class="main">
+	<p class="order_complete">
+		ご注文ありがとうございます。
+		<br>
+		注文手続きが完了しました。
+	</p>
+	<p class="order_complete_link">
+		<a href="/shared_shop/">トップへ戻る</a>
+	</p>
+</body>
+</html>
