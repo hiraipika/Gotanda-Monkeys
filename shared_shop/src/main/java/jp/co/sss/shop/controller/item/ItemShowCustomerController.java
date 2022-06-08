@@ -70,7 +70,7 @@ public class ItemShowCustomerController {
 	@RequestMapping(path = "/item/detail/{id}")
 	public String showItem(@PathVariable int id, Model model) {
 
-<<<<<<< HEAD
+
 		// 商品IDに該当する商品情報を取得
 		Item item = itemRepository.getById(id);
 
@@ -93,12 +93,11 @@ public class ItemShowCustomerController {
 	 * @param model Viewとの値受渡し
 	 * @return "category/list/category_list" カテゴリ情報 一覧画面へ
 	 */
-}
-=======
+
+
 	@RequestMapping(path = "/item/list")
 	public String showItemAll(Model model) {
 		
 		return "item/list/item_list";
 	}
 }
->>>>>>> 9af329b94d1b0c440bb6e22ab2af49c277a42054
