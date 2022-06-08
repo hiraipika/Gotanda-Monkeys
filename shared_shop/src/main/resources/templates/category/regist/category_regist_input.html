@@ -20,10 +20,14 @@
 				<li><label> <span class="input_title">カテゴリ名</span> <input
 						type="text" name="name" th:value="${categoryForm.name}"
 						th:field="*{name}" />
+						<!-- カテゴリ名は1文字以上15字以内で入力 -->
+						<span th:errors="*{name}"></span>
 				</label> </li>
 				<li><label> <span class="input_title">説明</span> <textarea
 							name="description" th:inline="text" rows="6"
 							th:text="${categoryForm.description}"></textarea>
+							<!-- 説明は0字以上30字以内 -->
+							<span th:errors="*{description}"></span>
 				</label> </li>
 			</ul>
 			<input type="submit" value="確認" class="send_button" />
