@@ -16,20 +16,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.OrderBean;
 import jp.co.sss.shop.bean.OrderItemBean;
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.form.OrderShowForm;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.util.PriceCalc;
 
-/**
- * 注文管理 一覧表示機能(運用管理者用)のコントローラクラス
- *
- * @author SystemShared
- */
 @Controller
-public class OrderShowAdminController {
-
+public class OrderShowCustomerController {
 	/**
 	 * 注文情報
 	 */
@@ -47,20 +42,20 @@ public class OrderShowAdminController {
 	 *
 	 * @param model Viewとの値受渡し
 	 * @param form 表示用注文情報
-	 * @return "order/list/order_list_admin" 注文情報 一覧画面へ
 	 */
-	@RequestMapping(path = "/order/list/admin", method = RequestMethod.GET)
-	public String showOrderList(Model model, @ModelAttribute OrderShowForm form) {
+	@RequestMapping(path = "/order/list", method = RequestMethod.GET)
+	public String showOrderList2(Model model, @ModelAttribute OrderShowForm form) {
 
-		// すべての注文情報を取得
-		List<Order> orderList = orderRepository.findAllOrderByInsertDateDesc();		
+		// ログインした会員の注文情報(一覧)を取得
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		List<Order> orderList = orderRepository. findByUserIdOrderByInsertDateDescIdAsc(userId);	
 
 		// 注文情報リストを生成
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
 		for (Order order : orderList) {
 			OrderBean orderBean = new OrderBean();
 			orderBean.setId(order.getId());
-			orderBean.setUserName(order.getUser().getName());
+//			orderBean.setUserName(order.getUser().getName());
 			orderBean.setInsertDate(order.getInsertDate().toString());
 			orderBean.setPayMethod(order.getPayMethod());
 
@@ -83,9 +78,9 @@ public class OrderShowAdminController {
 
 		// 注文情報リストをViewへ渡す
 		model.addAttribute("orders", orderBeanList);
-		model.addAttribute("url", "/order/list/admin");
+		model.addAttribute("url", "/order/list");
 
-		return "order/list/order_list_admin";
+		return "order/list/order_list";
 
 	}
 
@@ -100,8 +95,8 @@ public class OrderShowAdminController {
 	 *            セッション情報
 	 * @return "/order/detail/order_detail_admin" 注文情報 詳細画面へ
 	 */
-	@RequestMapping(path = "/order/detail/admin/{id}")
-	public String showOrder(@PathVariable int id, Model model, @ModelAttribute OrderShowForm form) {
+	@RequestMapping(path = "/order/detail/{id}")
+	public String showOrder2(@PathVariable int id, Model model, @ModelAttribute OrderShowForm form) {
 
 		// 選択された注文情報に該当する情報を取得
 		Order order = orderRepository.getById(form.getId());
@@ -140,7 +135,8 @@ public class OrderShowAdminController {
 		model.addAttribute("orderItemBeans", orderItemBeanList);
 		model.addAttribute("total", total);
 
-		return "order/detail/order_detail_admin";
-		}
+		return "order/detail/order_detail";
+
+	}
 
 }

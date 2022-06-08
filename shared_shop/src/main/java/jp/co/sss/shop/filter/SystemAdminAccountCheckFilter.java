@@ -44,7 +44,7 @@ public class SystemAdminAccountCheckFilter implements Filter {
 					HttpServletResponse httpResponse = (HttpServletResponse) response;
 
 					// ログイン画面にリダイレクト
-					httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
+					httpResponse.sendRedirect(httpRequest.getContextPath() + "/");
 				} else {
 					chain.doFilter(request, response);
 				}

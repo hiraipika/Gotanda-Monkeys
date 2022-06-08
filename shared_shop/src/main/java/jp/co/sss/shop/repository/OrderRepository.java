@@ -21,7 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	Order findTop1ByOrderByInsertDateDesc();
 
 	// 会員IDに該当する注文情報を注文日付順で検索
-	List<Order> findByUserIdOrderByInsertDateDescIdAsc(int userId);
+	List<Order> findByUserIdOrderByInsertDateDescIdAsc(Integer userId);
 
 	// 注文日付順で注文情報すべてを検索
 	@Query(JPQLConstant.FIND_ALL_ORDERS_ORDER_BY_INSERT_DATE)

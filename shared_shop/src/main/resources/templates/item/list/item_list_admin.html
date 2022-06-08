@@ -15,6 +15,7 @@
 		<div th:if="${#lists.isEmpty(items)}">
 			<p th:text="#{itemListAdmin.none}"></p>
 		</div>
+		
 		<table class="list_table item_list"  th:if="!${#lists.isEmpty(items)}">
 			<tr>
 				<th>ID</th>
@@ -29,7 +30,7 @@
 				<td><a th:href="@{/item/detail/admin/{id}(id=${item.id})}"
 					th:text="${item.name}"></a></td>
 				<td th:text="${item.price}"></td>
-				<td th:text="${item.categoryName}"></td>
+				<td th:text="${item.category.name}"></td>
 				<td>
 					<form method="post" th:action="@{/item/update/input}">
 						<input type="hidden" name="id" th:value="${item.id}" />
@@ -42,5 +43,31 @@
 				</td>
 			</tr>
 		</table>
+		
+			<!--<span th:if="!${pages.first}==${pages.last}">-->
+			<!-- ページリンク -->
+			<ul class="paging">
+				<!-- 先頭のページリンク -->
+				<li>
+					<span th:if="${pages.first}">&lt;&lt;</span>
+					<a th:if="${not pages.first}"
+						th:href="@{/item/detail/admin/{id}(page=0)}">&lt;&lt;</a>
+				</li>
+				<!-- 中間のページリンク -->
+				<li th:each="i : ${#numbers.sequence(0, pages.totalPages-1)}">
+					<span th:if="${i}==${pages.number}" th:text="${i+1}"></span>
+					<a th:if="${i}!=${pages.number}" th:href="@{/item/detail/admin/{id}(page=${i})}">
+						<span th:text="${i+1}"></span>
+					</a>
+				</li>
+				<!-- 末尾のページリンク -->
+				<li>
+					<span th:if="${pages.last}">&gt;&gt;</span>
+					<a th:if="${not pages.last}"			
+						th:href="@{/item/detail/admin/{id}(page=(${pages.totalPages}-1))}">&gt;&gt;</a>
+				</li>
+			</ul>
+		</span>
+		
 </body>
 </html>

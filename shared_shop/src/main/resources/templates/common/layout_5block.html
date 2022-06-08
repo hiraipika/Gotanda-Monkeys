@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!--一般会員のCSS-->
+
 <html xmlns:th="http://www.thymeleaf.org"
 	th:fragment="layout(title,body)">
 <head>
@@ -8,11 +10,14 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
 <title th:replace="${title}">シェアードショップ</title>
 </head>
-<body class="admin">
+<body th:classappend="${(session.user != null and (session.user.authority == 0 or session.user.authority == 1)) ? 'main' : '' }">
 	<!--/* ヘッダー */-->
 	<header>
 		<div th:replace="~{common/header :: layout-header}"></div>
 	</header>
+	<nav >
+		<div th:replace="~{common/menu :: layout-menu}"></div>
+	</nav>
 	<div class="container">
 		<!--/* サイドバー */-->
 		<aside>
