@@ -71,6 +71,10 @@ public class LoginController {
 				// 一般会員ログインした場合、トップ画面に遷移
 
 				return "redirect:/";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3866ee89c34d5120466bbf466bbd31ddfe475c5c
 			}
 			else {
 				// 運用管理者、もしくはシステム管理者としてログインした場合、管理者用メニュー画面に遷移
