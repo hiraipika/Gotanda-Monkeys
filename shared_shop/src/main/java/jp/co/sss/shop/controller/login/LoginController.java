@@ -69,7 +69,13 @@ public class LoginController {
 			Integer authority = ((UserBean) session.getAttribute("user")).getAuthority();
 			if (authority.intValue() == 2) {
 				// 一般会員ログインした場合、トップ画面に遷移
+<<<<<<< HEAD
 				return "redirect:/";
+=======
+
+				return "redirect:/";
+
+>>>>>>> 840b69952e0f245324891d7c8cc14e9c554a34de
 			}
 			else {
 				// 運用管理者、もしくはシステム管理者としてログインした場合、管理者用メニュー画面に遷移

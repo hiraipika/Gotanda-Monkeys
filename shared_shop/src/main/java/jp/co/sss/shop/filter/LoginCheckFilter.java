@@ -49,7 +49,7 @@ public class LoginCheckFilter implements Filter {
 		}
 	}
 
-	/**
+	/*
 	 * リクエストURLがチェック対象であるかを判定
 	 * 
 	 * @param requestURL リクエストURL
