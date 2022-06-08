@@ -75,7 +75,7 @@ public class LoginController {
 			}
 			else {
 				// 運用管理者、もしくはシステム管理者としてログインした場合、管理者用メニュー画面に遷移
-				return "";
+				return "admin_menu";
 			}
 		}
 	}
