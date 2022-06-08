@@ -34,6 +34,7 @@ public class ItemShowAdminController {
 	 * @param model Viewとの値受渡し
 	 * @return "category/list/category_list" カテゴリ情報 一覧画面へ
 	 */
+	
 	@RequestMapping(path = "/item/list/admin")
 	public String showItem(Model model) {
 		// 商品情報を全件検索(新着順)
@@ -57,6 +58,7 @@ public class ItemShowAdminController {
 	 * @param session セッション情報
 	 * @return "/item/detail/item_detail_admin" 商品情報 詳細画面へ
 	 */
+	
 	@RequestMapping(path = "/item/detail/admin/{id}")
 	public String showItem(@PathVariable int id, Model model) {
 
@@ -76,4 +78,20 @@ public class ItemShowAdminController {
 
 		return "item/detail/item_detail_admin";
 	}
-}
+	
+	/*@RequestMapping("/item/list/admin")
+		public String showItemList(Model model,Pageable pageable) {
+			//商品情報を検索
+			Page<Item>pageList = itemRepository.findAll(pageable);
+			
+			//検索結果を保存するためのjavabean（リスト）を用意
+			
+			List<Item>itemList = pageList.getContent();
+			
+			//商品情報をリクエストスコープに保存
+			model.addAttribute("pages",pageList);
+			model.addAttribute("items",itemList);
+			
+			return"item/list/item_list_admin";
+		}*/
+	}
