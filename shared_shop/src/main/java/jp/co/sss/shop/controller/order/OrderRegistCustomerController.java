@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import jp.co.sss.shop.bean.OrderBean;
+//import jp.co.sss.shop.bean.OrderBean;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.form.OrderForm;
 import jp.co.sss.shop.repository.OrderRepository;
@@ -33,7 +33,7 @@ public class OrderRegistCustomerController {
 	
 	@RequestMapping(path="/address/input", method=RequestMethod.POST)
 	public String addressInput(@ModelAttribute OrderForm form) {
-		OrderBean orderBean = new OrderBean();
+		//OrderBean orderBean = new OrderBean();
 		Order order = new Order();
 		
 //		orderBean.setPostalCode(form.getPostalCode());
