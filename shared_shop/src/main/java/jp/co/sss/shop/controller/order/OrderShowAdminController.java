@@ -141,6 +141,6 @@ public class OrderShowAdminController {
 		model.addAttribute("total", total);
 
 		return "order/detail/order_detail_admin";
-	}
+		}
 
 }
