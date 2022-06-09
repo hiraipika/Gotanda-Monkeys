@@ -15,9 +15,12 @@ import jp.co.sss.shop.entity.Item;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
-
-	/**  商品情報を新着順で検索*/
+	/** 商品情報を新着順で検索 */
 	public List<Item> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag);
 
-	
+	/*
+	*//** 商品情報を売れ筋順で検索 *//*
+							 * @Query("SELECT i FROM Items") public List<Item>
+							 * findByItemIdOrderByInsertQuantityDescItemIdAsc();
+							 */
 }
