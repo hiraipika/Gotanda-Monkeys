@@ -69,7 +69,7 @@ public class UserShowAdminController {
 		User user = userRepository.getById(form.getId());
 
 		UserBean userBean = new UserBean();
-
+		
 		// Userエンティティの各フィールドの値をUserBeanにコピー
 		BeanUtils.copyProperties(user, userBean);
 

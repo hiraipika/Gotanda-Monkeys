@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.OrderBean;
 import jp.co.sss.shop.bean.OrderItemBean;
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.form.OrderShowForm;
@@ -45,8 +46,9 @@ public class OrderShowCustomerController {
 	@RequestMapping(path = "/order/list", method = RequestMethod.GET)
 	public String showOrderList2(Model model, @ModelAttribute OrderShowForm form) {
 
-		// すべての注文情報を取得
-		List<Order> orderList = orderRepository.findAllOrderByInsertDateDesc();		
+		// ログインした会員の注文情報(一覧)を取得
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		List<Order> orderList = orderRepository. findByUserIdOrderByInsertDateDescIdAsc(userId);	
 
 		// 注文情報リストを生成
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();

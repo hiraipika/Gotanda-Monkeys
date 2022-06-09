@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jp.co.sss.shop.bean.ItemBean;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.repository.CategoryRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.util.BeanCopy;
 import jp.co.sss.shop.util.Constant;
@@ -27,7 +30,8 @@ public class ItemShowAdminController {
 	 */
 	@Autowired
 	ItemRepository itemRepository;
-
+	CategoryRepository categoryrepository;
+	
 	/**
 	 * 商品情報一覧表示処理
 	 *
@@ -36,7 +40,7 @@ public class ItemShowAdminController {
 	 */
 	
 	@RequestMapping(path = "/item/list/admin")
-	public String showItem(Model model) {
+	public String showItem(Model model, Pageable pageable) {
 		// 商品情報を全件検索(新着順)
 		List<Item> itemList = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED);
 
@@ -46,6 +50,17 @@ public class ItemShowAdminController {
 		// 商品情報をViewへ渡す
 		model.addAttribute("items", itemBeanList);
 		model.addAttribute("url", "/item/list/admin/");
+		
+		//商品情報を検索
+		Page<Item>pageList = itemRepository.findAll(pageable);
+		
+		//検索結果を保存するためのjavabean（リスト）を用意
+		
+		List<Item>itemList2 = pageList.getContent();
+		
+		//商品情報をリクエストスコープに保存
+		model.addAttribute("pages",pageList);
+		model.addAttribute("items",itemList2);
 
 		return "item/list/item_list_admin";
 	}
@@ -79,8 +94,9 @@ public class ItemShowAdminController {
 		return "item/detail/item_detail_admin";
 	}
 	
-	/*@RequestMapping("/item/list/admin")
+	@RequestMapping(path = "/item/detail/common/{id}")
 		public String showItemList(Model model,Pageable pageable) {
+	
 			//商品情報を検索
 			Page<Item>pageList = itemRepository.findAll(pageable);
 			
@@ -93,5 +109,5 @@ public class ItemShowAdminController {
 			model.addAttribute("items",itemList);
 			
 			return"item/list/item_list_admin";
-		}*/
+		}
 	}
