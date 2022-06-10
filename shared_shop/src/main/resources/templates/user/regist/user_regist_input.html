@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-        th:replace="~{common/layout_4block :: layout(~{::title},~{::body/content()})}">
-<head>
-<title>会員登録入力 | シェアードショップ</title>
-<meta charset="UTF-8" />
-</head>
-
-<body class="admin user_regist_input_admin">
+        th:replace="~{common/layout_3block :: layout(~{::title},~{::body/content()})}">
+        
+        
+                        
+	<head>
+		<title>
+			会員詳細 | シェアードショップ
+		</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="css/layout.css" />
+		<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+	</head>
+	
+	<body class="user user_detail">
+	
 		<h2 class="title">会員登録入力</h2>
 		<div class="user_info_form_area">
-			<form method="post" th:action="@{/user/regist/check/admin}" th:object="${userForm}" class="user_info_form">
+			<form method="post" th:action="@{/user/regist/check}" th:object="${userForm}" class="user_info_form">
+			
 				<ul th:if="${#fields.hasErrors('*')}"  th:class="input_list" >
   					<li th:each="err : ${#fields.errors('*')}" th:text="${err}" th:class="error_list" ></li>
 				</ul>
@@ -18,7 +28,7 @@
 						<li>
 							<label>
 								<span class="input_title">メールアドレス</span>
-								<input type="text" name="email" th:value="${userForm.email}" th:field="*{email}" />
+								<input type="text" name="email" th:value="${userForm.email}"/>
 							</label>
 						</li>
 						<li>
@@ -51,23 +61,15 @@
 								<input type="text" name="phoneNumber" th:value="${userForm.phoneNumber}" />
 							</label>
 						</li>
-						<li th:if="${session.user.authority == 0 or session.user.authority == 1}">
-							<span class="input_title">権限</span>
-							<div th:if="${session.user.authority == 0}" class="input">
-								<input type="radio" name="authority" value="0" th:checked="${userForm.authority == 0}" />システム管理者
-								<input type="radio" name="authority" value="1" th:checked="${userForm.authority == 1}" />運用管理者
-								<span th:if="${#fields.hasErrors('authority')}" th:errors="*{authority}"></span>
-							</div>
-								<label th:if="${session.user.authority == 1}" class="radio_label">運用管理者<br />
-								<input type="hidden" name="authority" value="1" />
-							</label>
-						</li>
+						
 					</ul>
+					
 				<input type="submit" value="確認" class="send_button" />
 			</form>
 			<form th:action="@{/user/list}">
 				<input type="submit" value="戻る" class="back_button"/>
 			</form>
 		</div>
-</body>
+	</body>
+	
 </html>

@@ -140,6 +140,14 @@ p {
 	z-index: 1;
 }
 
+.imageFile img{
+	width:100px;
+	height:100px;
+	display:block;
+	margin:auto;
+	position:relative;
+}
+
 .item:hover img {
 	-webkit-transform: scale(1.2, 1.2);
 	-moz-transform: scale(1.2, 1.2);

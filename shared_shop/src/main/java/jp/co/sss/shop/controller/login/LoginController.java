@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +61,7 @@ public class LoginController {
 			運用管理者、システム管理者の場合 "admin_menu"へ
 	 */
 	@RequestMapping(path = "/login", method = RequestMethod.POST)
-	public String doLogin(@Valid @ModelAttribute LoginForm form, BindingResult result) {
+	public String doLogin(@Valid @ModelAttribute LoginForm form, BindingResult result,Model model) {
 
 		if (result.hasErrors()) {
 			// 入力値に誤りがあった場合
@@ -68,9 +69,14 @@ public class LoginController {
 		} else {
 			Integer authority = ((UserBean) session.getAttribute("user")).getAuthority();
 			if (authority.intValue() == 2) {
+				
+				/*
+				 * User user = userRepository.findByEmail(form.getEmail());
+				 * model.addAttribute("user", user); return "user/detail/user_detail";
+				 */
 				// 一般会員ログインした場合、トップ画面に遷移
 
-				return "redirect:/";
+				return "redirect:user/detail";
 
 			}
 			else {
