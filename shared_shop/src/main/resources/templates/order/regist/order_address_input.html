@@ -11,36 +11,36 @@
 			<p th:text="#{orderList.none}"></p>
 	</div> -->
 	<div class="address_input_form">
-		<form method="post" action="/shared_shop/payment/input">
+		<form method="post" th:action="@{/payment/input}">
 			<br>
 			<ul class="input_list">
 				<li>
 					<label>
-						<span class="input_title">郵便番号</span>
-						<input type="text" name="postalCode"/>
+						<span class="input_titlesa">郵便番号</span>
+						<input type="text" name="postalCode" th:value="${order.postalCode}"/>
 					</label>
 				</li>
 				<li>
 					<label>
 						<span class="input_title">住所</span>
-						<textarea name="address" rows="6"></textarea>
+						<textarea name="address" rows="6" th:text="${order.address}"></textarea>
 					</label>
 				</li>
 				<li>
 					<label>
 						<span class="input_title">氏名</span>
-						<input type="text" name="name"/>
+						<input type="text" name="name" th:value="${order.name}"/>
 					</label>
 				</li>
 				<li>
 					<label>
 						<span class="input_title">電話番号</span>
-						<input type="text" name="phoneNumber"/>
+						<input type="text" name="phoneNumber" th:value="${order.phoneNumber}"/>
 					</label>
 				</li>
 			</ul>
-			<input type="submit" value="次へ" class="send_botton"/>
-			<input type="hidden" name="backflg" value="false"/>
+ 			<input type="submit" value="次へ" class="send_botton"/>
+			<input type="hidden" name="backFlg" value="false"/>
 		</form>
 		<form action="/shared_shop/basket/list?page=0">
 			<input type="submit" value="戻る" class="back_botton"/>
