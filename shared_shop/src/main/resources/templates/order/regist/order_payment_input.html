@@ -8,11 +8,11 @@
 <body class="main  order_payment_input">
 	<h2 class="title">お支払方法選択</h2>
 	<div class="user_info_form_area">
-		<form method="post" action="/shared_shop/order/check">
+		<form method="post" th:action="@{/order/check}" th:object="${orderForm}">
 			<ul class="payment_method_select">
 				<li>
 					<label class="radio_label">
-						<input type="radio" name="payMethod" value="1" checked="checked"/>クレジットカード
+						<input type="radio" name="payMethod" value="1"  checked="checked"/>クレジットカード
 					</label>
 				</li>
 				<li>
@@ -36,9 +36,19 @@
 					</label>
 				</li>
 			</ul>
+			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
+			<input type="hidden" name="address" th:value="${order.address}" />
+			<input type="hidden" name="name" th:value="${order.name}" />
+			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
 			<input type="submit" value="次へ" class="send_botton"/>
+			
 		</form>
-		<form action="/shared_shop/address/input">
+		<form method="post" th:action="@{/address/input}" class="update">
+			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
+			<input type="hidden" name="address" th:value="${order.address}" />
+			<input type="hidden" name="name" th:value="${order.name}" />
+			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
+			<input type="hidden" name="backFlg" th:value="true"/>
 			<input type="submit" value="戻る" class="back_botton"/>
 		</form>
 	</div>
