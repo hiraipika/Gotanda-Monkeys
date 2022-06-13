@@ -10,7 +10,7 @@ public class OrderBean {
 	/**
 	 * 注文ID
 	 */
-	private Integer id;
+	 private Integer id; 
 
 	/**
 	 * 注文日付
@@ -51,6 +51,7 @@ public class OrderBean {
 	 * 会員名
 	 */
 	private String userName;
+
 
 	public Integer getId() {
 		return id;
@@ -123,5 +124,9 @@ public class OrderBean {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
+	
+
+	 
 
 }
