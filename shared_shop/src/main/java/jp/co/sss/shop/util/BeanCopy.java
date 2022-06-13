@@ -9,7 +9,11 @@ import jp.co.sss.shop.bean.CategoryBean;
 import jp.co.sss.shop.bean.ItemBean;
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.ItemForm;
+import jp.co.sss.shop.form.OrderForm;
+import jp.co.sss.shop.form.UserForm;
 
 /**
  * オブジェクト間でのフィールドコピー処理を行うクラス
@@ -135,5 +139,21 @@ public class BeanCopy {
 		}
 
 		return beanList;
+	}
+	public static Order copyFormToEntity(OrderForm form, UserForm userForm) {
+		User user = new User();
+		Order order = new Order();
+
+		BeanUtils.copyProperties(form, order);
+
+		order.setAddress(form.getAddress());
+		order.setPostalCode(form.getPostalCode());
+		order.setName(form.getName());
+		order.setPayMethod(form.getPayMethod());
+		order.setPhoneNumber(form.getPhoneNumber());
+		user.setId(form.getId());
+		order.setUser(user);
+
+		return order;
 	}
 }
