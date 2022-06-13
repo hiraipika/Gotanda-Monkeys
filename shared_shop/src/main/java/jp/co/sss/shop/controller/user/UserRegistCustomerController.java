@@ -27,10 +27,15 @@ public class UserRegistCustomerController {
 	UserRepository repository;
 	
 	
-	
 	//新規会員登録入力画面に遷移する。
 	@RequestMapping(path="/user/regist/input", method=RequestMethod.GET)
 	public String userRegistInput(@ModelAttribute UserForm form) {
+		return "user/regist/user_regist_input";
+	}
+	
+	//確認画面から「戻る」ボタンを押したときに発動
+	@RequestMapping(path="/user/regist/input", method=RequestMethod.POST)
+	public String userRegistInputBack(@ModelAttribute UserForm form) {
 		return "user/regist/user_regist_input";
 	}
 	
@@ -49,13 +54,15 @@ public class UserRegistCustomerController {
 	//入力内容のDBへの登録。
 	@RequestMapping(path="/user/regist/complete", method=RequestMethod.POST)
 	public String doUserCheck(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session) {
-		
+		//新規会員情報を格納する「User」エンティティをインスタンス化
 		User user= new User();
 		
+		//登録日設定のため処理
 		java.util.Date utilDate = new java.util.Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = Date.valueOf(df.format(utilDate));
 		
+		//「User」エンティティに格納
 		user.setEmail(form.getEmail());
 		user.setPassword(form.getPassword());
 		user.setName(form.getName());
