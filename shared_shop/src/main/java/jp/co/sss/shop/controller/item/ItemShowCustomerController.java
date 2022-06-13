@@ -2,6 +2,8 @@ package jp.co.sss.shop.controller.item;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jp.co.sss.shop.bean.ItemBean;
+import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
@@ -32,6 +35,8 @@ public class ItemShowCustomerController {
 	@Autowired
 	OrderItemRepository orderItemRepository;
 
+	@Autowired
+	HttpSession session;
 	
 	/**
 	 * トップ画面 表示処理
@@ -45,6 +50,7 @@ public class ItemShowCustomerController {
 		
 		return "index";
 	}
+	
 	
 	@RequestMapping(path = "/item/detail")
 	public String showItem(Model model, Pageable pageable) {
@@ -117,6 +123,12 @@ public class ItemShowCustomerController {
 		// 商品情報を全件検索(売れ筋順)
 		List<Item> itemList = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED);
 		//List<OrderItem> itemlist = orderItemRepository.findByItemIdOrderByInsertQuantityDescItemIdAsc();
+		
+		// エンティティ内の検索結果をJavaBeansにコピー
+		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);
+
+		// 商品情報をViewへ渡す
+		model.addAttribute("items", itemBeanList);
 
 		return "item/list/item_list";
 	}
@@ -127,4 +139,41 @@ public class ItemShowCustomerController {
 		return "item/list/item_list";
 	}
 	
-}
+	
+	/*@RequestMapping(path="/basket/add")
+	public String Go_basket() {
+		return "redirect:/basket/list";
+	}
+	*/
+	/*
+	//カテゴリ別検索のやつ
+	@RequestMapping(path = "/item/list/category/1?categoryId={categoryId}", method = RequestMethod.GET)
+	public String searchByCategory(@PathVariable int categoryId,Model model) {
+		return "item/list/item_list";
+	}
+	*/
+	
+	@RequestMapping(path = "/item/list/category/1")
+	public String  searchByCategory(Model model) {
+		System.out.println();
+		Category category = new Category();
+		System.out.println(category.getId());
+		List<Item>categoryItem = itemRepository.findByCategory(category);
+	
+		// エンティティ内の検索結果をJavaBeansにコピー
+		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(categoryItem);
+		
+	/*if(categoryItem.size()==0){
+			model.addAttribute("categoryForm.name",  "閲覧できる商品情報がありません。");
+			/return
+		*/	
+		model.addAttribute("items",itemBeanList);
+		return "item/list/item_list";
+	}
+
+	}
+
+
+
+
+
