@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -32,6 +33,17 @@ public class UserShowCustomerController {
 		model.addAttribute("user", user);
 		
 		return "user/detail/user_detail";
+	}
+	
+	@RequestMapping(path="user/detail/{id}", method=RequestMethod.POST)
+	public String userDetailBack(@PathVariable int id, Model model) {
+		
+		User user = userRepository.getById(id);
+		
+		model.addAttribute("user", user);
+		
+		return "user/detail/user_detail";
+		
 		
 		
 	}
