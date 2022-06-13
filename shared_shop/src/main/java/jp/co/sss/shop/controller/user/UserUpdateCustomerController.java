@@ -23,47 +23,67 @@ import jp.co.sss.shop.repository.UserRepository;
 @Controller
 public class UserUpdateCustomerController {
 	
+	//会員情報
 	@Autowired
-	UserRepository repository;
+	UserRepository userRepository;
 	
+	//セッション
 	@Autowired
 	HttpSession session;
 	
 	
-	//新規会員登録入力画面に遷移する。
+	/**
+	 * 会員情報の変更入力画面表示処理
+	 *
+	 * @param form  会員情報フォーム
+	 * @param model Viewとの値受渡し
+	 * @return "user/update/user_update_input" 会員情報 変更入力画面へ
+	 **/
 	@RequestMapping(path="/user/update/input", method=RequestMethod.POST)
 	public String userUpdateInput(@ModelAttribute UserForm form, Model model, Integer id) {
 		
-		/*Integer id = ((UserBean) session.getAttribute("user")).getId();*/
-		User user = repository.getById(id);
+		User user = userRepository.getById(id);
 		session.setAttribute("users", user);
 		
 		return "user/update/user_update_input";
 	}
 	
 	
-	//入力内容の確認。
+	/**
+	 * 会員情報 変更確認処理
+	 *
+	 * @param form   会員情報フォーム
+	 * @param model  Viewとの値受渡し
+	 * @param result 入力チェック結果
+	 * @return 
+	 * 入力値エラーあり："user/update/user_update_input" 会員情報変更入力画面へ 
+	 * 入力値エラーなし："user/update/user_update_check" 会員情報 変更確認画面へ
+	 */
 	@RequestMapping(path="/user/update/check", method=RequestMethod.POST)
 	public String userDoUpdateInput(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session, Model model){
-		//エラーがある場合は前の入力画面に戻る。
+
 		if(result.hasErrors()) {
 			return "user/update/user_update_input";
 			
 		}
-		//エラーが無い場合は確認画面に遷移する。
+
 		return "user/update/user_update_check";
 	}
 	
-	//入力内容のDBへの登録。
+	//会員情報変更完了画面表示
 	@RequestMapping(path="/user/update/complete", method=RequestMethod.POST)
 	public String doUserCheck(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session) {
+
+		// 変更対象の会員情報を取得
+		User user= userRepository.getById(form.getId());
 		
-		User user= repository.getById(form.getId());
 		
+		//会員情報を登録した日付の取得
 		java.util.Date utilDate = new java.util.Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = Date.valueOf(df.format(utilDate));
 		
+		//入力した情報の更新
 		user.setEmail(form.getEmail());
 		user.setPassword(form.getPassword());
 		user.setName(form.getName());
@@ -74,7 +94,8 @@ public class UserUpdateCustomerController {
 		user.setDeleteFlag(0);
 		user.setInsertDate(date);
 		
-		repository.save(user);
+		//会員情報を保存
+		userRepository.save(user);
 		
 		return "user/update/user_update_complete";
 	}
