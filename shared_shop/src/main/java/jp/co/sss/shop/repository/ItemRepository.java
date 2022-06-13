@@ -3,6 +3,7 @@ package jp.co.sss.shop.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import jp.co.sss.shop.entity.Category;
@@ -16,15 +17,15 @@ import jp.co.sss.shop.entity.Item;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
-	/** 商品情報を新着順で検索 */
+
 	public List<Item> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag);
 
-	/**商品情報をカテゴリ別に検索　*/
-	 List<Item> findByCategory(Category category);
+	/** 商品情報を売れ筋順で検索 */
+	@Query(value = "SELECT * FROM ITEMS LEFT JOIN (SELECT ITEMS.ID ITEM_ID, COUNT(ITEM_ID) COUNT FROM ITEMS LEFT JOIN ORDER_ITEMS ON ITEMS.ID = ORDER_ITEMS.ITEM_ID GROUP BY ITEM_ID, ITEMS.ID) T1 ON ITEMS.ID = T1.ITEM_ID WHERE DELETE_FLAG = 0 ORDER BY COUNT DESC,ID ASC", nativeQuery = true)
+	public List<Item> findByOrder();
+
+	/** カテゴリー検索 */
+	public List<Item> findByCategoryId(Integer categoryId);
 	
-	/*
-	*//** 商品情報を売れ筋順で検索 *//*
-							 * @Query("SELECT i FROM Items") public List<Item>
-							 * findByItemIdOrderByInsertQuantityDescItemIdAsc();
-							 */
+
 }
