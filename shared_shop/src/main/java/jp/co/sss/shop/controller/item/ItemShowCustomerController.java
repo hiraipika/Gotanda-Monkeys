@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.ItemBean;
-import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.form.ItemForm;
 import jp.co.sss.shop.repository.ItemRepository;
@@ -41,8 +40,6 @@ public class ItemShowCustomerController {
 	@Autowired
 	HttpSession	session;
 
-	@Autowired
-	HttpSession session;
 	
 	/**
 	 * トップ画面 表示処理
@@ -52,12 +49,24 @@ public class ItemShowCustomerController {
 	 */
 	@RequestMapping(path = "/")
 	public String index(Model model) {
-
+		
+		List<Item> itemList = itemRepository.findByOrder();
+		
+		// エンティティ内の検索結果をJavaBeansにコピー
+		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);
+		
+		// 商品情報をViewへ渡す
+		//今日は↓リストの飛ばすところ直す
+		model.addAttribute("items", itemBeanList);
+		model.addAttribute("url", "/item/list/1");
+		model.addAttribute("sortType", 1);
 		
 		return "index";
+
+		
 	}
-	
-	
+
+
 	@RequestMapping(path = "/item/detail")
 	public String showItem(Model model, Pageable pageable) {
 	// 商品情報を全件検索(新着順)
@@ -130,9 +139,6 @@ public class ItemShowCustomerController {
 	public String showItemBy(Model model) {
 		// 商品情報を全件検索(売れ筋順)
 		List<Item> itemList = itemRepository.findByOrder();
-		
-		// エンティティ内の検索結果をJavaBeansにコピー
-		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);
 		
 		// エンティティ内の検索結果をJavaBeansにコピー
 		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);
@@ -212,3 +218,4 @@ public class ItemShowCustomerController {
 		
 		return "item/list/item_list";
 	}
+}
