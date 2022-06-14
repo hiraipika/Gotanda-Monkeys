@@ -53,9 +53,6 @@ public class OrderForm {
 	 */
 	private Integer payMethod;
 
-	/**
-	 * 会員ID
-	 */
 	private Integer userId;
 
 	/**
@@ -111,13 +108,6 @@ public class OrderForm {
 		this.payMethod = payMethod;
 	}
 
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
 
 	public Integer getPrice() {
 		return price;
@@ -125,5 +115,13 @@ public class OrderForm {
 
 	public void setPrice(Integer price) {
 		this.price = price;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 }
