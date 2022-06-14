@@ -102,12 +102,14 @@ public class ItemShowCustomerController {
 
 		// Itemエンティティの各フィールドの値をItemBeanにコピー
 		BeanUtils.copyProperties(item, itemBean);
+		System.out.println(itemBean.getStock());
 
 		// 商品情報にカテゴリ名を設定
 		itemBean.setCategoryName(item.getCategory().getName());
 
 		// 商品情報をViewへ渡す
 		model.addAttribute("item", itemBean);
+		model.addAttribute("orderStock", itemBean.getStock());
 
 		return "item/detail/item_detail";
 	}
