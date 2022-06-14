@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+<meta charset="UTF-8" />
+<title>買い物かご | シェアードショップ</title>
+</head>
+<body>
+<h2 class="title">買い物かご</h2>
+
+
+		<div> <!-- th:if="${#lists.isEmpty(BasketBean)}">
+			<p th:text="#{basketList.none}"></p>-->
+		</div>
+	 	<table class="list_table.order" >
+	 	 <!-- th:if="!${#lists.isEmpty(OrderItemBean)}"-->
+			<tr>
+				<th>商品名</th>
+				<th>数</th>
+				<th>操作</th>
+				<th>在庫</th>
+			</tr>
+
+			 <tr th:each="OrderItem: ${session.items}">
+
+			 <td> <a th:href="@{/item/detail/{id}(id=${OrderItem.id})}" th:text="${OrderItem.name}"> </a>
+			 </td>
+
+     		 <td th:text="${OrderItem.orderNum}"></td>
+
+          <td>
+            <form th:action="@{/basket/delete}" method="post">
+					 <input type="hidden" name="id" th:value="${BasketBean}"  />
+					<input type="submit" value="削除"  class="delete" />
+				</form>
+            </td>
+  <!--
+           <td>
+			 <div th:if="${#lists.isEmpty(items)}">
+				<span th:text="#{basketList.itemStockNone}"></span>
+		    </div>
+
+		    <div th:if="!${#lists.isEmpty(items)}" >
+		    	<span th:text="${OrderNum.stock}"></span>
+		    </div>
+		    </td>-->
+
+
+			 <td th:text="${OrderItem.stock}"></td>
+			 </tr>
+             </table>
+
+
+
+<div>
+
+		<br>
+		<br>
+     	<form th:action="@{/address/input}" method="post">
+     	 <!--<radio_label<input type="hidden" name="id" th:value="${basket.itemId}" >-->
+		<input type="submit" value="ご注文のお手続き" class="radio_label" />
+		</form>
+		<form th:action="@{/basket/allDelete}" method="post">
+		<!-- <input type="hidden" name="id" th:value="${inBasket}" /> -->
+		<input type="submit" value="買い物かごを空にする" class="delete" />
+		</form>
+       </div>
+
+
+
+
+</body>
+</html>
