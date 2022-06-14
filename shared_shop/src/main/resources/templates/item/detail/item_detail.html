@@ -32,13 +32,18 @@
 			</div>
 			
 			<div class="detail_button_area">
-				<form method="get" th:action="@{/item/list/1}">
-				    <input type="submit" value="戻る"  class="back_button" />
-				</form>
+				<div>数量</div><select><!-- th:value="${item.stock}" -->
+						<option th:each="item, cnt: ${#numbers.sequence(1,orderStock,1)}" th:text="${cnt.count}"></option>
+					</select>
+				<br>	
 				
-				<form method="post" th:action="@{/basket/add}">
+				<form method="post" th:action="@{/basket/add}" th:if="${item.stock != 0}">
 					<input type="hidden" name="id" th:value="${item.id}" />
 					<input type="submit" value="買い物かごに入れる" />
+				</form>
+				
+				<form method="get" th:action="@{/item/list/1}">
+				    <input type="submit" value="戻る"  class="back_button" />
 				</form>
 				
 			</div>

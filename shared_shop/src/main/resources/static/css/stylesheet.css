@@ -130,8 +130,16 @@ p {
 	width: 100%;
 }
 
+/*----追加（越後）------*/
+
+.item_link{
+	margin-top:-180px;
+}
+
+/*----ここまで----*/
+
 .item img {
-	width: auto;
+	width: 50%;
 	height: 100%;
 	display: block;
 	margin: auto;

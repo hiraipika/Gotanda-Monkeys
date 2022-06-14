@@ -76,7 +76,7 @@ public class LoginController {
 				 */
 				// 一般会員ログインした場合、トップ画面に遷移
 
-				return "redirect:user/detail";
+				return "redirect:/";
 
 			}
 			else {

@@ -1,5 +1,6 @@
 package jp.co.sss.shop.controller.order;
 
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.bean.OrderBean;
 import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
 import jp.co.sss.shop.form.UserForm;
@@ -43,14 +45,14 @@ public class OrderRegistCustomerController {
 			// 入力対象の会員情報を取得
 			Integer userId = ((UserBean)session.getAttribute("user")).getId();
 			User user = userRepository.getById(userId);
-			OrderBean orderBean = new OrderBean();
 			
+			OrderBean orderBean = new OrderBean();
 			// Userエンティティの各フィールドの値をorderBeanにコピー
 			BeanUtils.copyProperties(user, orderBean);
 			// 会員情報をViewに渡す
 			model.addAttribute("order", orderBean);
-			System.out.println(orderBean.getAddress());
-			
+			model.addAttribute("user", user);
+					
 		} else {
 			UserBean userBean = new UserBean();
 			// 入力値を会員情報にコピー
@@ -64,36 +66,46 @@ public class OrderRegistCustomerController {
 	
 	//支払い方法画面の表示
 	@RequestMapping(path="/payment/input", method=RequestMethod.POST)
-	public String paymentInput(@ModelAttribute OrderForm form, Model model) {
+	public String inputPayment(@ModelAttribute OrderForm form, Model model) {
 				OrderBean orderBean = new OrderBean();
+				User user = new User();
 				// 入力値を会員情報にコピー
 				BeanUtils.copyProperties(form, orderBean);
 	
 				// 会員情報をViewに渡す
 				model.addAttribute("order", orderBean);
-				System.out.println(orderBean.getAddress());
-				System.out.println(orderBean.getName());
-				System.out.println(orderBean.getPayMethod());
+				model.addAttribute("user", user);
+
 			return "order/regist/order_payment_input";
 	}
 	
 	
 	//注文最終確認画面
 	@RequestMapping(path="/order/check", method=RequestMethod.POST)
-	public String orderCheck(@ModelAttribute OrderForm form, Model model) {
-				
+	public String checkOrder(@ModelAttribute OrderForm form, Model model) {
+				User user = new User();
 				OrderBean orderBean = new OrderBean();
 				// 入力値を会員情報にコピー
 				BeanUtils.copyProperties(form, orderBean);
 				// 会員情報をViewに渡す
 				model.addAttribute("order", orderBean);
+				model.addAttribute("user", user);
 			return "order/regist/order_check";
 	}
 	
 	
 	//注文確定画面
 	@RequestMapping(path="/order/complete", method=RequestMethod.POST)
-	public String orderComplete() {
+	public String completeOrder(OrderForm form) {
+		Order order = new Order();
+		Integer userId = ((UserBean)session.getAttribute("user")).getId();
+		User user = userRepository.getById(userId);
+		//フォームで入力した値をorderエンティティにコピー
+		BeanUtils.copyProperties(form, order);
+		//会員番号はフォームで入力せずに、ログインしている人のIDを持ってきてセットする
+		order.setUser(user);
+		//DBに登録
+		orderRepository.save(order);
 		return "order/regist/order_complete";
 	}
 	
