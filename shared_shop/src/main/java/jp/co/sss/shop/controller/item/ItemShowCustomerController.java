@@ -102,7 +102,6 @@ public class ItemShowCustomerController {
 
 		// Itemエンティティの各フィールドの値をItemBeanにコピー
 		BeanUtils.copyProperties(item, itemBean);
-		System.out.println(itemBean.getStock());
 
 		// 商品情報にカテゴリ名を設定
 		itemBean.setCategoryName(item.getCategory().getName());
@@ -201,11 +200,8 @@ public class ItemShowCustomerController {
 			}
 		}else if(id == 2){
 			// 商品情報を全件検索(売れ筋順)
-			//List<Item> itemList = itemRepository.findByOrder();
-			//itemList = itemRepository.findByCategoryId(categoryId);
 			
 			List<Item> itemList = itemRepository.findByOrderOfCategory(categoryId);
-			//itemList = itemRepository.findByOrder();
 			
 			// エンティティ内の検索結果をJavaBeansにコピー
 			List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);

@@ -28,8 +28,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	public List<Item> findByCategoryId(Integer categoryId);
 	
 	/** 売れ筋順のカテゴリーで検索 */
-	//QueryにWhere文をつけて指定すれば出来る？
-	//→()内のデータをQueryに反映出来るかがわからない
 	@Query(value = "SELECT * FROM ITEMS LEFT JOIN (SELECT ITEMS.ID ITEM_ID, COUNT(ITEM_ID) COUNT FROM ITEMS LEFT JOIN ORDER_ITEMS ON ITEMS.ID = ORDER_ITEMS.ITEM_ID GROUP BY ITEM_ID, ITEMS.ID) T1 ON ITEMS.ID = T1.ITEM_ID WHERE DELETE_FLAG = 0 AND ITEMS.CATEGORY_ID = :categoryId ORDER BY COUNT DESC,ID ASC", nativeQuery = true)
 	public List<Item> findByOrderOfCategory(@Param("categoryId") Integer categoryId);
 }
