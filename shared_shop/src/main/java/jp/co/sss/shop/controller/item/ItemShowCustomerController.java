@@ -191,7 +191,7 @@ public class ItemShowCustomerController {
 			//List<Item> itemList = itemRepository.findByOrder();
 			//itemList = itemRepository.findByCategoryId(categoryId);
 			
-			List<Item> itemList = itemRepository.findByCategoryId(categoryId);
+			List<Item> itemList = itemRepository.findByOrderOfCategory(categoryId);
 			//itemList = itemRepository.findByOrder();
 			
 			// エンティティ内の検索結果をJavaBeansにコピー
