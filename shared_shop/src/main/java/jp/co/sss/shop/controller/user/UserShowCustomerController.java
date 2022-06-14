@@ -42,9 +42,7 @@ public class UserShowCustomerController {
 		
 		model.addAttribute("user", user);
 		
-		return "user/detail/user_detail";
-		
-		
+		return "user/detail/user_detail";	
 		
 	}
 	

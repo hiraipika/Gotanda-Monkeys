@@ -37,7 +37,7 @@
 					</select>
 				<br>	
 				
-				<form method="post" th:action="@{/basket/add}">
+				<form method="post" th:action="@{/basket/add}" th:if="${item.stock != 0}">
 					<input type="hidden" name="id" th:value="${item.id}" />
 					<input type="submit" value="買い物かごに入れる" />
 				</form>
