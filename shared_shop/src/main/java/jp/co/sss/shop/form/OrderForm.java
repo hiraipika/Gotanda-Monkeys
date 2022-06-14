@@ -53,6 +53,9 @@ public class OrderForm {
 	 */
 	private Integer payMethod;
 
+	/*
+	 * 会員番号
+	 */
 	private Integer userId;
 
 	/**
