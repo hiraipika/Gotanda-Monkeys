@@ -49,11 +49,24 @@ public class ItemShowCustomerController {
 	 */
 	@RequestMapping(path = "/")
 	public String index(Model model) {
-
+		
+		List<Item> itemList = itemRepository.findByOrder();
+		
+		// エンティティ内の検索結果をJavaBeansにコピー
+		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);
+		
+		// 商品情報をViewへ渡す
+		//今日は↓リストの飛ばすところ直す
+		model.addAttribute("items", itemBeanList);
+		model.addAttribute("url", "/item/list/1");
+		model.addAttribute("sortType", 1);
 		
 		return "index";
+
+		
 	}
-	
+
+
 	@RequestMapping(path = "/item/detail")
 	public String showItem(Model model, Pageable pageable) {
 	// 商品情報を全件検索(新着順)
@@ -89,12 +102,14 @@ public class ItemShowCustomerController {
 
 		// Itemエンティティの各フィールドの値をItemBeanにコピー
 		BeanUtils.copyProperties(item, itemBean);
+		System.out.println(itemBean.getStock());
 
 		// 商品情報にカテゴリ名を設定
 		itemBean.setCategoryName(item.getCategory().getName());
 
 		// 商品情報をViewへ渡す
 		model.addAttribute("item", itemBean);
+		model.addAttribute("orderStock", itemBean.getStock());
 
 		return "item/detail/item_detail";
 	}
@@ -133,9 +148,7 @@ public class ItemShowCustomerController {
 		// 商品情報をViewへ渡す
 		model.addAttribute("items", itemBeanList);
 		model.addAttribute("url", "/item/list/2");
-		model.addAttribute("sortType", 2);
-
-		return "item/list/item_list";
+		model.addAttribute("sortType", 2);		return "item/list/item_list";
 	}
 
 	@RequestMapping(path = "/item/list")
@@ -144,7 +157,7 @@ public class ItemShowCustomerController {
 		return "item/list/item_list";
 	}
 	
-	/*
+/*
 	 * カテゴリー検索(商品一覧画面以外) 表示処理
 	 */
 	@RequestMapping(path = "/item/list/category/1", method = RequestMethod.GET)
@@ -191,7 +204,7 @@ public class ItemShowCustomerController {
 			//List<Item> itemList = itemRepository.findByOrder();
 			//itemList = itemRepository.findByCategoryId(categoryId);
 			
-			List<Item> itemList = itemRepository.findByCategoryId(categoryId);
+			List<Item> itemList = itemRepository.findByOrderOfCategory(categoryId);
 			//itemList = itemRepository.findByOrder();
 			
 			// エンティティ内の検索結果をJavaBeansにコピー
