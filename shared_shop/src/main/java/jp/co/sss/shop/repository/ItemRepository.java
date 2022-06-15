@@ -30,4 +30,8 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	/** 売れ筋順のカテゴリーで検索 */
 	@Query(value = "SELECT * FROM ITEMS LEFT JOIN (SELECT ITEMS.ID ITEM_ID, COUNT(ITEM_ID) COUNT FROM ITEMS LEFT JOIN ORDER_ITEMS ON ITEMS.ID = ORDER_ITEMS.ITEM_ID GROUP BY ITEM_ID, ITEMS.ID) T1 ON ITEMS.ID = T1.ITEM_ID WHERE DELETE_FLAG = 0 AND ITEMS.CATEGORY_ID = :categoryId ORDER BY COUNT DESC,ID ASC", nativeQuery = true)
 	public List<Item> findByOrderOfCategory(@Param("categoryId") Integer categoryId);
+	
+	/** 在庫ストックをオーダー分減らす */
+	@Query(value = "UPDATE ITEMS SET STOCK = (STOCK - :orderItems) WHERE ID = :stockId" ,nativeQuery = true)
+	public List<Item> decreaseByOrder(@Param("stockId") Integer stockId, @Param("orderItems")Integer orderItems);
 }
