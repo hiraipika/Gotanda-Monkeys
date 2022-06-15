@@ -24,10 +24,11 @@ public class BasketCustomerController {
 	@Autowired
 	HttpSession session;
 
+	
 	//商品追加
 
 	@RequestMapping(path = "/basket/add", method = RequestMethod.POST)
-	public String addItem(Integer id, Model model) {
+	public String addItem(Integer id, Integer orderNum, Model model) {
 		System.out.println(id);
 		//買い物カゴに商品があるか確認。
 		//ない場合は「リスト」の作成。ある場合は、既存のリストの呼び出し。
@@ -41,7 +42,6 @@ public class BasketCustomerController {
 
 			String name = item.getName();
 			Integer stock = item.getStock();
-			Integer orderNum = 1;
 
 			//「BasketBean」に代入
 			BasketBean bean = new BasketBean(id,name,stock,orderNum);
@@ -51,13 +51,7 @@ public class BasketCustomerController {
 
 			//スコープに挿入。
 			session.setAttribute("orderItem", items);
-			session.setAttribute("items", bean);
-			/*
-			 * System.out.println(bean.getName()); System.out.println(bean.getStock());
-			 * System.out.println(bean.getOrderNum()); System.out.println(bean.getId());
-			 * System.out.println(items.get(0));
-			 */
-
+			System.out.println(items.get(0));*/
 			return "basket/basket_shopping";
 
 
@@ -69,7 +63,7 @@ public class BasketCustomerController {
 
 			//アイテムが既にリストにあるか確認する。
 			//ある場合は上書き。ない場合は新たに作りリストに挿入。
-			items = elicitItemBean(items,id);
+			items = elicitItemBean(items,id,orderNum);
 			
 
 				//スコープに挿入。
@@ -80,9 +74,34 @@ public class BasketCustomerController {
 		}
 	}
 
-
-
-	  public List<BasketBean> elicitItemBean (List<BasketBean>items,Integer id) {
+	@RequestMapping(path = "/basket/delete", method = RequestMethod.POST)
+	public String elicitItemDelete (Integer id) {
+		
+		  //リスト内での要素の位置を調べるための変数。
+			int number=0;
+			List<BasketBean> items = (ArrayList)session.getAttribute("orderItem");
+			for(BasketBean bean : items) {
+			//リストにカゴに入れたアイテムが存在した場合
+			if(bean.getId()==id) {
+				
+				items.remove(number);	
+				
+				return "basket/basket_shopping";
+			}
+			number++;
+			}
+			return "basket/basket_shopping";
+	  }
+	
+	@RequestMapping(path="/basket/allDelete", method=RequestMethod.GET)
+	public String deleteAll() {
+		session.removeAttribute("orderItem");
+		return"basket/basket_shopping";
+	}
+	
+	
+	public List<BasketBean> elicitItemBean (List<BasketBean>items,Integer id, Integer orderNum) {
+		  
 		  //リスト内での要素の位置を調べるための変数。
 			int number=0;
 			for(BasketBean bean : items) {
@@ -90,7 +109,7 @@ public class BasketCustomerController {
 			//リストにカゴに入れたアイテムが存在した場合
 			if(bean.getId()==id) {
 				
-				bean.setOrderNum(bean.getOrderNum()+1);
+				bean.setOrderNum(bean.getOrderNum()+orderNum);
 				
 				//位置を指定し「上書き」
 				items.set(number,bean);
@@ -102,19 +121,20 @@ public class BasketCustomerController {
 		}
 				
 				Item item = repository.getById(id);
-
+	
 				//「BasketBean」に代入するための変数宣言
 				String name = item.getName();
 				Integer stock = item.getStock();
-				Integer orderNum = 1;
-
+	
 				//「BasketBean」に代入
 				BasketBean beans = new BasketBean(id,name,stock,orderNum);
 				
 				items.add(beans);
 				
 			return items;
-	  }
+			
+	}
+	
 	  
 	  @RequestMapping(path="/basket/list")
 	  public String basketList() {

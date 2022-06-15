@@ -51,7 +51,10 @@ public class UserShowAdminController {
 		model.addAttribute("url", "/user/list");
 		
 		return "user/list/user_list";
+		
 		}
+	
+	
 	
 
 	
