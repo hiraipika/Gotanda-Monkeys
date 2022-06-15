@@ -174,6 +174,11 @@ public class OrderRegistCustomerController {
 
 			orderItemRepository.save(orderItem);
 		}
+		
+		//データベースのItemsテーブルのstockからorderItemのquantity分を引く
+		/**
+		 * 
+		 */
 		return "order/regist/order_complete";
 	}
 }

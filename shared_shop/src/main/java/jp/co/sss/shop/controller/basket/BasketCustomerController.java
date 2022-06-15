@@ -51,7 +51,7 @@ public class BasketCustomerController {
 
 			//スコープに挿入。
 			session.setAttribute("orderItem", items);
-			System.out.println(items.get(0));*/
+			System.out.println(items.get(0));
 			return "basket/basket_shopping";
 
 
