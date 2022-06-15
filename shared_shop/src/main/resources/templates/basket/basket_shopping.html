@@ -30,7 +30,7 @@
 
           <td>
             <form th:action="@{/basket/delete}" method="post">
-					 <input type="hidden" name="id" th:value="${BasketBean}"  />
+					 <input type="hidden" name="id" th:value="${orderItem.id}"  />
 					<input type="submit" value="削除"  class="delete" />
 				</form>
             </td>
@@ -60,7 +60,7 @@
      	 <!--<radio_label<input type="hidden" name="id" th:value="${basket.itemId}" >-->
 		<input type="submit" value="ご注文のお手続き" class="radio_label" />
 		</form>
-		<form th:action="@{/basket/allDelete}" method="post">
+		<form th:action="@{/basket/allDelete}" method="get">
 		<!-- <input type="hidden" name="id" th:value="${inBasket}" /> -->
 		<input type="submit" value="買い物かごを空にする" class="delete" />
 		</form>
