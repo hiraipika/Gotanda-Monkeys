@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -50,10 +52,11 @@ public class OrderShowAdminController {
 	 * @return "order/list/order_list_admin" 注文情報 一覧画面へ
 	 */
 	@RequestMapping(path = "/order/list/admin", method = RequestMethod.GET)
-	public String showOrderList(Model model, @ModelAttribute OrderShowForm form) {
+	public String showOrderList(Model model, @ModelAttribute OrderShowForm form,Pageable pageable) {
 
 		// すべての注文情報を取得
-		List<Order> orderList = orderRepository.findAllOrderByInsertDateDesc();		
+		Page<Order> pageList = orderRepository.findAllOrderByInsertDateDesc(pageable);	
+		List<Order> orderList = pageList.getContent();;
 
 		// 注文情報リストを生成
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
@@ -84,6 +87,7 @@ public class OrderShowAdminController {
 		// 注文情報リストをViewへ渡す
 		model.addAttribute("orders", orderBeanList);
 		model.addAttribute("url", "/order/list/admin");
+		model.addAttribute("pages", pageList);
 
 		return "order/list/order_list_admin";
 
