@@ -45,15 +45,15 @@ public class UserShowAdminController {
 	public String showUserList(Model model, @ModelAttribute UserForm form, Pageable pageable) {
 			
 		// 会員情報リストを取得
-		Page<User> userList = (Page<User>) userRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED, pageable);
+		Page<User> pageList = (Page<User>) userRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED, pageable);
 		
 		//検索結果を保存するためのjavabean（リスト）を用意
 		
-		List<User>userList2 = userList.getContent();
+		List<User>userList = pageList.getContent();
 
 		// 会員情報をViewに渡す
-		model.addAttribute("pages", userList);
-		model.addAttribute("users", userList2);
+		model.addAttribute("pages", pageList);
+		model.addAttribute("users", userList);
 		model.addAttribute("url", "/user/list");
 		
 		return "user/list/user_list";
