@@ -118,8 +118,8 @@ public class OrderShowCustomerController {
 		// 注文商品情報を取得
 		List<OrderItemBean> orderItemBeanList = new ArrayList<OrderItemBean>();
 		for (OrderItem orderItem : order.getOrderItemsList()) {
-			OrderItemBean orderItemBean = new OrderItemBean();
 			
+			OrderItemBean orderItemBean = new OrderItemBean();
 			orderItemBean.setName(orderItem.getItem().getName());
 			orderItemBean.setPrice(orderItem.getPrice());
 			orderItemBean.setOrderNum(orderItem.getQuantity());
