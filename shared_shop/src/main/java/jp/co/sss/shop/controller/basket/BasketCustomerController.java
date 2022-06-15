@@ -51,12 +51,12 @@ public class BasketCustomerController {
 
 			//スコープに挿入。
 			session.setAttribute("orderItem", items);
-			/*session.setAttribute("items", bean);
-			System.out.println(bean.getName());
-			System.out.println(bean.getStock());
-			System.out.println(bean.getOrderNum());
-			System.out.println(bean.getId());
-			System.out.println(items.get(0));*/
+			session.setAttribute("items", bean);
+			/*
+			 * System.out.println(bean.getName()); System.out.println(bean.getStock());
+			 * System.out.println(bean.getOrderNum()); System.out.println(bean.getId());
+			 * System.out.println(items.get(0));
+			 */
 
 			return "basket/basket_shopping";
 
@@ -114,6 +114,11 @@ public class BasketCustomerController {
 				items.add(beans);
 				
 			return items;
+	  }
+	  
+	  @RequestMapping(path="/basket/list")
+	  public String basketList() {
+		  return "basket/basket_shopping";
 	  }
 }
 
