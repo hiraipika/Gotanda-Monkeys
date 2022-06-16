@@ -15,7 +15,7 @@
 		<div th:if="${#lists.isEmpty(items)}">
 			<p th:text="#{itemListAdmin.none}"></p>
 		</div>
-		
+
 		<table class="list_table item_list"  th:if="!${#lists.isEmpty(items)}">
 			<tr>
 				<th>ID</th>
@@ -25,7 +25,7 @@
 				<th>操作</th>
 			</tr>
 			<!--/* 商品情報 */-->
-			<tr th:each="item: ${items}">
+			<tr th:each="item: ${items}"th:if="${item.deleteFlag==0}">
 				<td th:text="${item.id}"></td>
 				<td><a th:href="@{/item/detail/admin/{id}(id=${item.id})}"
 					th:text="${item.name}"></a></td>
@@ -43,7 +43,7 @@
 				</td>
 			</tr>
 		</table>
-		
+
 			<!--<span th:if="!${pages.first}==${pages.last}">-->
 			<!-- ページリンク -->
 			<ul class="paging">
@@ -63,11 +63,11 @@
 				<!-- 末尾のページリンク -->
 				<li>
 					<span th:if="${pages.last}">&gt;&gt;</span>
-					<a th:if="${not pages.last}"			
+					<a th:if="${not pages.last}"
 						th:href="@{/item/detail/admin/{id}(page=(${pages.totalPages}-1))}">&gt;&gt;</a>
 				</li>
 			</ul>
-				
-		
+
+
 </body>
 </html>

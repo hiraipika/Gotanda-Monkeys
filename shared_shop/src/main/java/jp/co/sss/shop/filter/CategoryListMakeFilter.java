@@ -83,6 +83,7 @@ public class CategoryListMakeFilter implements Filter {
 						|| requestURL.indexOf("/item/detail") != -1
 						|| requestURL.indexOf("/item/regist/input") != -1
 						|| requestURL.indexOf("/item/update/input") != -1
+						|| requestURL.indexOf("/item/regist/check") != -1
 						|| requestURL.indexOf("/basket") != -1
 						|| requestURL.indexOf("/address") != -1
 						|| requestURL.indexOf("/payment/input") != -1
