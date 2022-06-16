@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.sss.shop.entity.Item;
 
@@ -33,7 +34,10 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	public List<Item> findByOrderOfCategory(@Param("categoryId") Integer categoryId);
 	
 	/** 在庫ストックをオーダー分減らす */
+	@Transactional
 	@Modifying
-	@Query(value = "UPDATE ITEMS SET STOCK = (STOCK - :orderItemList) WHERE ID = :id" , nativeQuery = true)
-	public List<Item> decreaseByOrder(@Param("id") Integer id, @Param("orderItemList") Integer orderItemList);
-}
+	@Query("UPDATE Item SET stock = (:stock - :orderItemList) WHERE id = :id")
+	public default Integer decreaseByOrder(@Param("orderItemList") Integer orderItemList, @Param("stock") Integer stock, @Param("id") Integer id) {
+		Integer newStock = stock - orderItemList;
+		return newStock;
+	}}

@@ -97,25 +97,38 @@ public class OrderRegistCustomerController {
 	//注文最終確認画面
 	@RequestMapping(path="/order/check", method=RequestMethod.POST)
 	public String checkOrder(@ModelAttribute OrderForm form, Model model) {
-				//	UserエンティティとOrderBeanのオブジェクトを作成
-				User user = new User();
-				OrderBean orderBean = new OrderBean();
-				
-				// 入力値を会員情報にコピー
-				BeanUtils.copyProperties(form, orderBean);
-				
-				// 会員情報をViewに渡す
-				model.addAttribute("order", orderBean);
-				model.addAttribute("user", user);
-				
-				return "order/regist/order_check";
-	}
+		List<OrderItemBean> orderItemBean = new ArrayList<>();
+		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
+		Integer total = 0;
+
+		for (BasketBean item : items) {
+			OrderItemBean orderitembean = new OrderItemBean();
+
+			BeanUtils.copyProperties(item, orderitembean);
+
+			// 商品情報データベースから必要な情報をorderitembeanにセットする
+			Item itemEntity = itemRepository.getById(item.getId());
+			orderitembean.setImage(itemEntity.getImage());
+			orderitembean.setPrice(itemEntity.getPrice());
+			orderitembean.setSubtotal(itemEntity.getPrice() * item.getOrderNum());
+
+			total += orderitembean.getSubtotal();
+
+			orderItemBean.add(orderitembean);
+
+		}
+		orderBean.setTotal(total);
+		
+		model.addAttribute("order", orderBean);
+		session.setAttribute("orderItems", orderItemBean);
+		return "order/regist/order_check";	}
 	
 	
 	
 	//注文確定画面
 	@RequestMapping(path="/order/complete", method=RequestMethod.POST)
 	public String completeOrder(OrderForm form) {
+
 		
 		//ログインしたユーザーの会員番号を取得
 		Order order = new Order();
