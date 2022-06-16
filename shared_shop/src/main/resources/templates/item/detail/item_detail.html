@@ -48,7 +48,7 @@
 				<!-- 「数量:」の場所をドロップダウンの横に配置 -->
 				<!-- ドロップダウンの場所をボタンの左は時に寄せる -->
 				<form method="post" th:action="@{/basket/add}" th:if="${item.stock != 0}" >
-				<div>数量:
+				<div align="left" class="detail_button_area">数量:
 					<select name="orderNum">
 						<option th:each="item, cnt: ${#numbers.sequence(1,orderStock,1)}" th:text="${cnt.count}"></option>
 					</select>
