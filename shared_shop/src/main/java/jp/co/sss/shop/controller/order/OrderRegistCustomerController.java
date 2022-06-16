@@ -102,6 +102,9 @@ public class OrderRegistCustomerController {
 		return "order/regist/order_payment_input";
 	}
 
+	
+	
+	
 	// 注文最終確認画面
 	@RequestMapping(path = "/order/check", method = RequestMethod.POST)
 	public String checkOrder(@ModelAttribute OrderForm form, Model model) {
@@ -118,32 +121,75 @@ public class OrderRegistCustomerController {
 
 		List<OrderItemBean> orderItemBean = new ArrayList<>();
 		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
+		//在庫が0のリスト
+		List<String> none = new ArrayList<>();
+		//注文数のほうが多い時のリスト
+		List<String> mini  = new ArrayList<>();
+		
 		Integer total = 0;
-
-		for (BasketBean item : items) {
+	
+		for ( int i=items.size()-1; i>=0; i--) {
+//			BasketBean basketBean = new BasketBean();
+			BasketBean basketBean = items.get(i);
 			OrderItemBean orderitembean = new OrderItemBean();
+			Item itemEntity = itemRepository.getById(items.get(i).getId());
+			
+			//在庫が0の時
+			if ( itemEntity.getStock()==0) {
+				none.add(itemEntity.getName());
+				items.remove(i);
+			
+			//注文数＞在庫の時
+			} else if ( itemEntity.getStock()<basketBean.getOrderNum()) {
+				mini.add(itemEntity.getName());
+				basketBean.setOrderNum(itemEntity.getStock());
+				BeanUtils.copyProperties(basketBean, orderitembean);
+				
+				orderitembean.setOrderNum(basketBean.getOrderNum());
+				  orderitembean.setImage(itemEntity.getImage());
+				  orderitembean.setPrice(itemEntity.getPrice());
+				  orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
+				
+				total += orderitembean.getSubtotal();
 
-			BeanUtils.copyProperties(item, orderitembean);
-
-			// 商品情報データベースから必要な情報をorderitembeanにセットする
-			Item itemEntity = itemRepository.getById(item.getId());
-			orderitembean.setImage(itemEntity.getImage());
-			orderitembean.setPrice(itemEntity.getPrice());
-			orderitembean.setSubtotal(itemEntity.getPrice() * item.getOrderNum());
+				orderItemBean.add(orderitembean);
+				
+			}  else {
+			  BeanUtils.copyProperties(basketBean, orderitembean);
+			  
+			  // 商品情報データベースから必要な情報をorderitembeanにセットする 
+				/* Item itemEntity =itemRepository.getById(basketBean.getId()); */
+			  orderitembean.setImage(itemEntity.getImage());
+			  orderitembean.setPrice(itemEntity.getPrice());
+			  orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
+			 
 
 			total += orderitembean.getSubtotal();
 
 			orderItemBean.add(orderitembean);
 
+			}
 		}
 		orderBean.setTotal(total);
 		
 		model.addAttribute("order", orderBean);
+		model.addAttribute("none", none);
+		model.addAttribute("mini", mini);
 		session.setAttribute("orderItems", orderItemBean);
 		System.out.println(orderBean.getTotal());
 		return "order/regist/order_check";
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 注文確定画面
 	@RequestMapping(path = "/order/complete", method = RequestMethod.POST)
 	public String completeOrder(OrderForm form) {
@@ -171,9 +217,13 @@ public class OrderRegistCustomerController {
 			orderItem.setItem(itemEntity);
 			orderItem.setOrder(order);
 			orderItem.setPrice(itemEntity.getPrice());
-
+			
+			itemEntity.setStock(itemEntity.getStock()-orderItem.getQuantity());
+			itemRepository.save(itemEntity);
+			
 			orderItemRepository.save(orderItem);
 		}
+		items.clear();
 		return "order/regist/order_complete";
 	}
 }
