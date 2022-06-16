@@ -1,7 +1,7 @@
 package jp.co.sss.shop.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,5 +23,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	User findByEmailAndDeleteFlag(String email, int deleteFlag);
 
 	// 削除フラグに合った会員情報をすべて検索
-	List<User> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag);
+	//List <User> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag, Pageable pageable);
+	
+
+
+public Page<User> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag, Pageable pageable);
+	
 }
