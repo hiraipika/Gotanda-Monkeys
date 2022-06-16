@@ -140,7 +140,6 @@ public class OrderRegistCustomerController {
 		
 		model.addAttribute("order", orderBean);
 		session.setAttribute("orderItems", orderItemBean);
-		System.out.println(orderBean.getTotal());
 		return "order/regist/order_check";
 	}
 
@@ -176,9 +175,17 @@ public class OrderRegistCustomerController {
 		}
 		
 		//データベースのItemsテーブルのstockからorderItemのquantity分を引く
-		/**
-		 * 
-		 */
+		for(BasketBean basket : items) {
+			Item item = itemRepository.getById(basket.getId());
+			System.out.println("orderNum：" + basket.getOrderNum());
+			System.out.println("id：" + basket.getId());
+			System.out.println("stoxk：" + basket.getStock());
+			System.out.println("decreaseByOrder：" + itemRepository.decreaseByOrder(basket.getOrderNum(), basket.getStock(), basket.getId()));
+			item.setStock(itemRepository.decreaseByOrder(basket.getOrderNum(), basket.getStock(), basket.getId()));
+			
+			itemRepository.save(item);
+		}
+		
 		return "order/regist/order_complete";
 	}
 }
