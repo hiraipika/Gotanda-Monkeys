@@ -22,15 +22,28 @@
 					<dd th:text="${item.name}"></dd>
 					<dt>価格：</dt>
 					<dd th:text="${item.price}"></dd>
-					<dt>在庫：</dt>
-					<dd th:text="${item.stock}"></dd>
+						<dt>在庫：</dt>
+					<!-- 在庫数が0の場合(message:在庫なし) -->
+					<dd th:if="${item.stock == 0}">
+					在庫なし
+					</dd>
+
+					<!-- 在庫数が0でない、または在庫数が6以上(message:1~5の在庫の数) -->
+					<dd th:if="${{item.stock > 0 && item.stock < 6}}">
+					<p th:text="${item.stock}"></p>
+					</dd>
+
+					<!-- 在庫数が0でない、または1以上5以下ではない(message:在庫あり) -->
+					<dd th:if="${{item.stock > 6}}">
+					在庫あり
+					</dd>
 					<dt>カテゴリ：</dt>
 					<dd th:text="${item.categoryName}"></dd>
 					<dt>説明：</dt>
 					<dd th:text="${item.description}"></dd>
 				</dl>
 			</div>
-			
+
 			<div class="detail_button_area">
 				<div>数量</div><select name="orderNum"><!-- th:value="${item.stock}" -->
 			<!-- 「数量:」の場所をドロップダウンの横に配置 -->
@@ -40,17 +53,17 @@
 					<select name="orderNum">						<option th:each="item, cnt: ${#numbers.sequence(1,orderStock,1)}" th:text="${cnt.count}"></option>
 					</select>
 				</div>
-				<br>	
+				<br>
 					<input type="hidden" name="id" th:value="${item.id}" />
 					<input type="submit" value="買い物かごに入れる" />
 				</form>
-				
+
 				<form method="get" th:action="@{/item/list/1}">
 				    <input type="submit" value="戻る"  class="back_button" />
 				</form>
-				
+
 			</div>
-			
+
 		</div>
 
 </body>
