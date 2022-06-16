@@ -30,8 +30,8 @@
 				<li><label> <span class="input_title">在庫数</span> <input
 						type="text" name="stock" th:value="${itemForm.stock}" />
 				</label> <span class="error_message"></span></li>
-				<li><label><span class="input_title">カテゴリ</span> <select
-						name="categoryId">
+				<li><label><span class="input_title">カテゴリ</span> 
+					<select name="categoryId">
 							<option th:each="category: ${categories}"
 								th:value="${category.id}" th:text="${category.name}"
 								th:selected="${category.id} == ${itemForm.categoryId}"></option>

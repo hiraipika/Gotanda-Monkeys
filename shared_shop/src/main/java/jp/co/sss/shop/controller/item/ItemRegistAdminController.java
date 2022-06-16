@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,9 @@ public class ItemRegistAdminController {
 	 */
 	@Autowired
 	public ItemRepository	itemRepository;
+	
+	@Autowired
+	HttpSession session;
 
 	/**
 	 * 商品情報登録画面の表示処理
@@ -58,10 +62,12 @@ public class ItemRegistAdminController {
 	 */
 	@RequestMapping(path = "/item/regist/input", method = RequestMethod.GET)
 	public String registInput(Model model) {
-		
+		System.out.println("registInput");
 		if (!model.containsAttribute("itemForm")) {
 			model.addAttribute("itemForm", new ItemForm());
 		}
+		System.out.println("model：" + model.getAttribute("categories"));
+		System.out.println("session：" + session.getAttribute("categories"));
 		
 		return "item/regist/item_regist_input";
 	}
@@ -72,11 +78,12 @@ public class ItemRegistAdminController {
 	 * @return "item/regist/item_regist_input" 商品情報 登録画面へ
 	 */
 	@RequestMapping(path = "/item/regist/input", method = RequestMethod.POST)
-	public String registInputBack(ItemForm form) {
-		
+	public String registInputBack(ItemForm form, Model model) {
+		System.out.println("registInputBack");
+		System.out.println("model：" + model.getAttribute("categories"));
+		System.out.println("session：" + session.getAttribute("categories"));
 		return "item/regist/item_regist_input";
 	}
-	
 
 	/**
 	 * 商品情報登録確認処理
