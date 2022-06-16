@@ -1,6 +1,9 @@
 package jp.co.sss.shop.controller.order;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -13,11 +16,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.OrderBean;
+import jp.co.sss.shop.bean.OrderItemBean;
 import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
+import jp.co.sss.shop.repository.ItemRepository;
+import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
 
@@ -30,6 +39,10 @@ public class OrderRegistCustomerController {
 	OrderRepository orderRepository;
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	ItemRepository itemRepository;
+	@Autowired
+	OrderItemRepository orderItemRepository;
 	/**
 	 * セッション
 	 */
@@ -97,6 +110,17 @@ public class OrderRegistCustomerController {
 	//注文最終確認画面
 	@RequestMapping(path="/order/check", method=RequestMethod.POST)
 	public String checkOrder(@ModelAttribute OrderForm form, Model model) {
+		// UserエンティティとOrderBeanのオブジェクトを作成
+		User user = new User();
+		OrderBean orderBean = new OrderBean();
+
+		// 入力値を会員情報にコピー
+		BeanUtils.copyProperties(form, orderBean);
+
+		// 会員情報をViewに渡す
+
+		model.addAttribute("user", user);
+
 		List<OrderItemBean> orderItemBean = new ArrayList<>();
 		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
 		Integer total = 0;
@@ -118,10 +142,12 @@ public class OrderRegistCustomerController {
 
 		}
 		orderBean.setTotal(total);
-		
+
 		model.addAttribute("order", orderBean);
 		session.setAttribute("orderItems", orderItemBean);
-		return "order/regist/order_check";	}
+		System.out.println(orderBean.getTotal());
+		return "order/regist/order_check";
+	}
 	
 	
 	
@@ -141,6 +167,31 @@ public class OrderRegistCustomerController {
 		order.setUser(user);
 		//DBに登録
 		orderRepository.save(order);
+		// データベースのorderItemテーブルへの登録
+		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
+
+		for (BasketBean basket : items) {
+			OrderItem orderItem = new OrderItem();
+			Item itemEntity = itemRepository.getById(basket.getId());
+			orderItem.setQuantity(basket.getOrderNum());
+			orderItem.setItem(itemEntity);
+			orderItem.setOrder(order);
+			orderItem.setPrice(itemEntity.getPrice());
+
+			orderItemRepository.save(orderItem);
+		}
+		//データベースのItemsテーブルのstockからorderItemのquantity分を引く
+		for(BasketBean basket : items) {
+			Item item = itemRepository.getById(basket.getId());
+			System.out.println("orderNum：" + basket.getOrderNum());
+			System.out.println("id：" + basket.getId());
+			System.out.println("stoxk：" + basket.getStock());
+			System.out.println("decreaseByOrder：" + itemRepository.decreaseByOrder(basket.getOrderNum(), basket.getStock(), basket.getId()));
+			item.setStock(itemRepository.decreaseByOrder(basket.getOrderNum(), basket.getStock(), basket.getId()));
+
+			itemRepository.save(item);
+		}
+		
 		return "order/regist/order_complete";
 	}
 }
