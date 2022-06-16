@@ -1,6 +1,5 @@
 package jp.co.sss.shop.controller.order;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,17 +48,17 @@ public class OrderRegistCustomerController {
 	@Autowired
 	HttpSession session;
 
-	//お届け先入力画面表示
+	// お届け先入力画面表示
 	@RequestMapping(path = "/address/input")
-	public String addressInput(boolean backFlg, Model model,@ModelAttribute OrderForm form) {
+	public String addressInput(boolean backFlg, Model model, @ModelAttribute OrderForm form) {
 		// 戻るボタンかどうかを判定
-		
+
 		if (!backFlg) {
 			// 入力対象の会員情報を取得
-			Integer userId = ((UserBean)session.getAttribute("user")).getId();
+			Integer userId = ((UserBean) session.getAttribute("user")).getId();
 			User user = userRepository.getById(userId);
-			
-			//お届け先入力欄に初期値を設定する処理
+
+			// お届け先入力欄に初期値を設定する処理
 			OrderBean orderBean = new OrderBean();
 			OrderForm orderForm = new OrderForm();
 			// Userエンティティの各フィールドの値をorderBeanにコピー
@@ -70,9 +69,9 @@ public class OrderRegistCustomerController {
 			// 会員情報をViewに渡す
 			model.addAttribute("orderForm", orderForm);
 			model.addAttribute("user", user);
-					
+
 		} else {
-			
+
 			UserBean userBean = new UserBean();
 			// 入力値を会員情報にコピー
 			BeanUtils.copyProperties(form, userBean);
@@ -81,30 +80,30 @@ public class OrderRegistCustomerController {
 		}
 		return "order/regist/order_address_input";
 	}
-	
-	
-	
-	//支払い方法画面の表示
-	@RequestMapping(path="/payment/input", method=RequestMethod.POST)
+
+	// 支払い方法画面の表示
+	@RequestMapping(path = "/payment/input", method = RequestMethod.POST)
 	public String inputPayment(@Valid @ModelAttribute OrderForm form, BindingResult result, Model model) {
-		
-			//お届け先入力でエラーがあったらエラーメッセージを表示
-			if (result.hasErrors()) {
-				return "order/regist/order_address_input";
-			}
-			
-			OrderBean orderBean = new OrderBean();
-			User user = new User();
-			// 入力値を会員情報にコピー
-			BeanUtils.copyProperties(form, orderBean);
-		
-			// 会員情報をViewに渡す
-			model.addAttribute("order", orderBean);
-			model.addAttribute("user", user);
-	
-			return "order/regist/order_payment_input";
+
+		// お届け先入力でエラーがあったらエラーメッセージを表示
+		if (result.hasErrors()) {
+			return "order/regist/order_address_input";
+		}
+
+		OrderBean orderBean = new OrderBean();
+		User user = new User();
+		// 入力値を会員情報にコピー
+		BeanUtils.copyProperties(form, orderBean);
+
+		// 会員情報をViewに渡す
+		model.addAttribute("order", orderBean);
+		model.addAttribute("user", user);
+
+		return "order/regist/order_payment_input";
 	}
-	@RequestMapping(path = "/order/check", method = RequestMethod.POST)	public String checkOrder(@ModelAttribute OrderForm form, Model model) {
+
+	@RequestMapping(path = "/order/check", method = RequestMethod.POST)
+	public String checkOrder(@ModelAttribute OrderForm form, Model model) {
 		// UserエンティティとOrderBeanのオブジェクトを作成
 		User user = new User();
 		OrderBean orderBean = new OrderBean();
@@ -118,53 +117,57 @@ public class OrderRegistCustomerController {
 
 		List<OrderItemBean> orderItemBean = new ArrayList<>();
 		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
-		//在庫が0のリスト
+		// 在庫が0のリスト
 		List<String> none = new ArrayList<>();
-		//注文数のほうが多い時のリスト
-		List<String> mini  = new ArrayList<>();
-		
+		// 注文数のほうが多い時のリスト
+		List<String> mini = new ArrayList<>();
+
 		Integer total = 0;
-	
-		for ( int i=items.size()-1; i>=0; i--) {
-//			BasketBean basketBean = new BasketBean();
+
+		for (int i = items.size() - 1; i >= 0; i--) {
+			// 買い物かごの中に入っている商品を取得
 			BasketBean basketBean = items.get(i);
 			OrderItemBean orderitembean = new OrderItemBean();
 			Item itemEntity = itemRepository.getById(items.get(i).getId());
-			
-			//在庫が0の時
-			if ( itemEntity.getStock()==0) {
+
+			// 在庫が0の時
+			if (itemEntity.getStock() == 0) {
 				none.add(itemEntity.getName());
 				items.remove(i);
-			
-			//注文数＞在庫の時
-			} else if ( itemEntity.getStock()<basketBean.getOrderNum()) {
+
+				// 注文数＞在庫の時
+			} else if (itemEntity.getStock() < basketBean.getOrderNum()) {
+
+				// miniListに追加
 				mini.add(itemEntity.getName());
+				// 注文数＝在庫数にセット
 				basketBean.setOrderNum(itemEntity.getStock());
+				// BasketBeanの値をOrderItemBeanにコピー
 				BeanUtils.copyProperties(basketBean, orderitembean);
-				
+
+				// OrderItemBeanに値をセット
 				orderitembean.setOrderNum(basketBean.getOrderNum());
-				  orderitembean.setImage(itemEntity.getImage());
-				  orderitembean.setPrice(itemEntity.getPrice());
-				  orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
-				
+				orderitembean.setImage(itemEntity.getImage());
+				orderitembean.setPrice(itemEntity.getPrice());
+				orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
+
+				total += orderitembean.getSubtotal();
+				// OrderItemBeanの値をOrderItemBeanリストに追加
+				orderItemBean.add(orderitembean);
+
+			} else {
+				BeanUtils.copyProperties(basketBean, orderitembean);
+
+				// 商品情報データベースから必要な情報をorderitembeanにセットする
+				orderitembean.setImage(itemEntity.getImage());
+				orderitembean.setPrice(itemEntity.getPrice());
+				orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
+
+				// 購入商品の合計金額を算出
 				total += orderitembean.getSubtotal();
 
+				// OrderItemBeanの値をOrderItemBeanリストに追加
 				orderItemBean.add(orderitembean);
-				
-			}  else {
-			  BeanUtils.copyProperties(basketBean, orderitembean);
-			  
-			  // 商品情報データベースから必要な情報をorderitembeanにセットする 
-				/* Item itemEntity =itemRepository.getById(basketBean.getId()); */
-			  orderitembean.setImage(itemEntity.getImage());
-			  orderitembean.setPrice(itemEntity.getPrice());
-			  orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
-			 
-
-			total += orderitembean.getSubtotal();
-
-			orderItemBean.add(orderitembean);
-
 			}
 		}
 		orderBean.setTotal(total);
@@ -176,23 +179,29 @@ public class OrderRegistCustomerController {
 		System.out.println(orderBean.getTotal());
 		return "order/regist/order_check";
 	}
-	@RequestMapping(path = "/order/complete", method = RequestMethod.POST)	public String completeOrder(OrderForm form) {
 
-		
-		//ログインしたユーザーの会員番号を取得
+	
+	
+	@RequestMapping(path = "/order/complete", method = RequestMethod.POST)
+	public String completeOrder(OrderForm form) {
+
+		// ログインしたユーザーの会員番号を取得
 		Order order = new Order();
-		Integer userId = ((UserBean)session.getAttribute("user")).getId();
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
 		User user = userRepository.getById(userId);
-		
-		//フォームで入力した値をorderエンティティにコピー
-		BeanUtils.copyProperties(form, order);
-		//会員番号はフォームで入力せずに、ログインしている人のIDを持ってきてセットする
-		order.setUser(user);
-		//DBに登録
-		orderRepository.save(order);
-		// データベースのorderItemテーブルへの登録
-		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
 
+		// フォームで入力した値をorderエンティティにコピー
+		BeanUtils.copyProperties(form, order);
+		// 会員番号はフォームで入力せずに、ログインしている人のIDを持ってきてセットする
+		order.setUser(user);
+		// Orderテーブルにお届け先や支払い方法を登録
+		orderRepository.save(order);
+		
+		
+		//買い物かごリストの呼び出し
+		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
+		
+		//OrderItemテーブルに購入した商品の情報を登録
 		for (BasketBean basket : items) {
 			OrderItem orderItem = new OrderItem();
 			Item itemEntity = itemRepository.getById(basket.getId());
@@ -200,24 +209,13 @@ public class OrderRegistCustomerController {
 			orderItem.setItem(itemEntity);
 			orderItem.setOrder(order);
 			orderItem.setPrice(itemEntity.getPrice());
-			
-			itemEntity.setStock(itemEntity.getStock()-orderItem.getQuantity());
-			itemRepository.save(itemEntity);
-			
 			orderItemRepository.save(orderItem);
-		}
-		//データベースのItemsテーブルのstockからorderItemのquantity分を引く
-		for(BasketBean basket : items) {
-			Item item = itemRepository.getById(basket.getId());
-			System.out.println("orderNum：" + basket.getOrderNum());
-			System.out.println("id：" + basket.getId());
-			System.out.println("stoxk：" + basket.getStock());
-			System.out.println("decreaseByOrder：" + itemRepository.decreaseByOrder(basket.getOrderNum(), basket.getStock(), basket.getId()));
-			item.setStock(itemRepository.decreaseByOrder(basket.getOrderNum(), basket.getStock(), basket.getId()));
 
-			itemRepository.save(item);
+			//Itemテーブルの在庫を、購入した分減らして更新
+			itemEntity.setStock(itemEntity.getStock() - orderItem.getQuantity());
+			itemRepository.save(itemEntity);
 		}
-			items.clear();
+		items.clear();
 		return "order/regist/order_complete";
 	}
 }

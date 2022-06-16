@@ -59,7 +59,6 @@ public class OrderShowCustomerController {
 		for (Order order : orderList) {
 			OrderBean orderBean = new OrderBean();
 			orderBean.setId(order.getId());
-//			orderBean.setUserName(order.getUser().getName());
 			orderBean.setInsertDate(order.getInsertDate().toString());
 			orderBean.setPayMethod(order.getPayMethod());
 
@@ -84,7 +83,6 @@ public class OrderShowCustomerController {
 		model.addAttribute("orders", orderBeanList);
 		model.addAttribute("url", "/order/list");
 		model.addAttribute("pages", pageList);
-		
 		
 		return "order/list/order_list";
 
