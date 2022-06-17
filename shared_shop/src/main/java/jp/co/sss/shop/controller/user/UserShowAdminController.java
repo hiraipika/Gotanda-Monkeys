@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -40,13 +42,17 @@ public class UserShowAdminController {
 	 * @return "user/list/user_list" 会員情報一覧表示画面へ
 	 */
 	@RequestMapping(path = "/user/list", method = RequestMethod.GET)
-	public String showUserList(Model model, @ModelAttribute UserForm form) {
+	public String showUserList(Model model, @ModelAttribute UserForm form, Pageable pageable) {
 			
-		
 		// 会員情報リストを取得
-		List<User> userList = userRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED);
+		Page<User> pageList = (Page<User>) userRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED, pageable);
+		
+		//検索結果を保存するためのjavabean（リスト）を用意
+		
+		List<User>userList = pageList.getContent();
 
 		// 会員情報をViewに渡す
+		model.addAttribute("pages", pageList);
 		model.addAttribute("users", userList);
 		model.addAttribute("url", "/user/list");
 		

@@ -1,34 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-        th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 <head>
-	<meta charset="UTF-8">
-	<title>注文内容最終確認｜システムシェアード</title>
+<meta charset="UTF-8">
+<title>注文内容最終確認｜システムシェアード</title>
 </head>
 <body class="main order_check" th:object="${orderForm}">
 	<h2 class="title">注文内容最終確認</h2>
+
 	<div class="user_info_form_area">
-			<table class="list_table_order_check">
-				<tr>
-					<th>商品名</th>
-					<th>商品画像</th>
-					<th>単価</th>
-					<th>数量</th>
-					<th>小計</th>
-		<!-- 		</tr>
-					<tr th:each="orderItem: ${orderItemBeans}">
-						<td th:text="${orderItem.name}"></td>
-						<td th:text="${orderItem.price}"></td>
-						<td th:text="${orderItem.orderNum}"></td>
-						<td th:text="${orderItem.subtotal}"></td>
-					</tr>
-				<tr>
-					<td colspan="2"></td>
-					<td>合計</td>
-					<td th:text="${total}"></td>
-				</tr> -->
-		</table> 
-		
+
+		<div th:each="none: ${none}">
+			<div th:if="!${#lists.isEmpty(none)}">
+				<p class="err" th:text="${none} + #{orderCheckList.none}"></p>
+			</div>
+		</div>
+
+		<div th:each="mini: ${mini}">
+			<div th:if="!${#lists.isEmpty(mini)}">
+				<p class="err" th:text="${mini} + #{orderCheckList.mini}"></p>
+			</div>
+		</div>
+
+		<table class="list_table item_detail">
+			<tr>
+				<th>商品名</th>
+				<th>商品画像</th>
+				<th>単価</th>
+				<th>数量</th>
+				<th>小計</th>
+			</tr>
+			<tr th:each="orderItem: ${session.orderItems}">
+				<td th:text="${orderItem.name}"></td>
+				<td class="imageFile">
+				<span th:if="${orderItem.image != null}">
+					<img th:src="@{/img/{image}(image=${orderItem.image})}"></img>
+				</span>
+				<span th:if="${orderItem.image == null}">
+					<img th:src="@{/img/common/no_image.jpg}"></img>
+				</span>
+				</td>
+				<td th:text="${orderItem.price}"></td>
+				<td th:text="${orderItem.orderNum}"></td>
+				<td th:text="${orderItem.subtotal}"></td>
+			</tr>
+			<tr>
+				<td colspan="2"></td>
+				<td>合計</td>
+				<td th:text="${order.total}"></td>
+			</tr>
+		</table>
+
 		<table class="detail_table address">
 			<caption class="table_caption">お届け先</caption>
 			<tr>
@@ -48,7 +70,7 @@
 				<td th:text="${order.phoneNumber}"></td>
 			</tr>
 		</table>
-		
+
 		<table class="detail_table pay">
 			<caption class="table_caption">お支払方法</caption>
 			<tr>
@@ -58,25 +80,26 @@
 					<span th:case="2">銀行振込</span>
 					<span th:case="3">着払い</span>
 					<span th:case="4">電子マネー</span>
-					<span th:case="5">コンビニ決済</span>	
+					<span th:case="5">コンビニ決済</span>
 				</td>
 			</tr>
 		</table>
-		<form method="post"  th:action="@{/order/complete}" th:object="${orderForm}">
-			<input type="hidden" name="postalCode" th:value="${order.postalCode}"/>
-			<input type="hidden" name="address" th:value="${order.address}"/>
-			<input type="hidden" name="name" th:value="${order.name}"/>
-			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}"/>
-			<input type="hidden" name="payMethod" th:value="${order.payMethod}"/>
-			<input class="send_button" type="submit" value="ご注文の確定"/>
+		
+		<form method="post" th:action="@{/order/complete}" th:object="${orderForm}">
+			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
+			<input type="hidden" name="address" th:value="${order.address}" />
+			<input type="hidden" name="name" th:value="${order.name}" />
+			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
+			<input type="hidden" name="payMethod" th:value="${order.payMethod}" />
+			<input class="send_button" type="submit" value="ご注文の確定" />
 		</form>
 		<form method="post" th:action="@{/payment/input}" class="update">
-			<input type="hidden" name="postalCode" th:value="${order.postalCode}"/>
-			<input type="hidden" name="address" th:value="${order.address}"/>
-			<input type="hidden" name="name" th:value="${order.name}"/>
-			<input type="hidden" name="phoneNumber"th:value="${order.phoneNumber}"/>
-			<input type="hidden" name="payMethod"  th:value="${order.payMethod}"/>
-			<input type="hidden" name="backflg" value="true" />
+			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
+			<input type="hidden" name="address" th:value="${order.address}" />
+			<input type="hidden" name="name" th:value="${order.name}" />
+			<input type="hidden" name="phoneNumber" th:value="${order.phoneNumber}" />
+			<input type="hidden" name="payMethod" th:value="${order.payMethod}" />
+			<input type="hidden" name="backflg" value="true" /> 
 			<input class="back_button" type="submit" value="戻る" />
 		</form>
 	</div>

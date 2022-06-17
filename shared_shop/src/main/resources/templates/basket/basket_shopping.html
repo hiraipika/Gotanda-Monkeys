@@ -9,6 +9,7 @@
 <h2 class="title">買い物かご</h2>
 
 
+<<<<<<< HEAD
 		<div th:if="${#lists.isEmpty(session.orderItem)}">
 			<p th:text="#{basketList.none}"></p>
 		</div>
@@ -19,6 +20,13 @@
 		
 	 	<table class="list_table.order" >
 	 	 <th:if="!${#lists.isEmpty(OrderItemBean)}">
+=======
+<!-- 		<div th:if="${#lists.isEmpty(BasketBean)}">
+			<p th:text="#{basketList.none}"></p>
+		</div> -->
+	 	<table class="list_table basket" >
+	 	 <!-- th:if="!${#lists.isEmpty(OrderItemBean)}"-->
+>>>>>>> 7f3896c3ef7dd38bc2b32116f28c8e91ead34281
 			<tr>
 				<th>商品名</th>
 				<th>数</th>

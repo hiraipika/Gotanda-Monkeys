@@ -44,7 +44,7 @@ public class BasketCustomerController {
 			
 			//スコープに挿入
 			session.setAttribute("orderItem", items);
-
+			System.out.println(items.get(0));
 			return "basket/basket_shopping";
 
 		} else {
@@ -179,7 +179,6 @@ public class BasketCustomerController {
 			
 	}
 	
-	
 	public BasketBean stockChanger(BasketBean bean,Integer id, Integer orderNum) {
 		
 			Item item = repository.getById(id);
@@ -208,5 +207,4 @@ public class BasketCustomerController {
 		return bean;
 		
 	}
-	
 }
