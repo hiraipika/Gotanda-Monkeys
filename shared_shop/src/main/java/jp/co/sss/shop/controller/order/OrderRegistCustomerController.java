@@ -32,7 +32,7 @@ import jp.co.sss.shop.repository.UserRepository;
 @Controller
 public class OrderRegistCustomerController {
 	/**
-	 * 注文情報(注文商品や届け先、支払い方法など)
+	 * 注文情報
 	 */
 	@Autowired
 	OrderRepository orderRepository;
@@ -49,12 +49,12 @@ public class OrderRegistCustomerController {
 	HttpSession session;
 
 	// お届け先入力画面表示
-	@RequestMapping(path = "/address/input")
-	public String addressInput(boolean backFlg, Model model, @ModelAttribute OrderForm form) {
+	@RequestMapping(path = "/address/input", method = RequestMethod.POST)
+	public String inputAddress(boolean backFlg, Model model, @ModelAttribute OrderForm form) {
 		// 戻るボタンかどうかを判定
 
 		if (!backFlg) {
-			// 入力対象の会員情報を取得
+			// ログインしているの会員情報を取得
 			Integer userId = ((UserBean) session.getAttribute("user")).getId();
 			User user = userRepository.getById(userId);
 
@@ -68,19 +68,20 @@ public class OrderRegistCustomerController {
 
 			// 会員情報をViewに渡す
 			model.addAttribute("orderForm", orderForm);
-			model.addAttribute("user", user);
 
 		} else {
-
+			OrderBean orderBean = new OrderBean();
 			UserBean userBean = new UserBean();
-			// 入力値を会員情報にコピー
-			BeanUtils.copyProperties(form, userBean);
+			
+			BeanUtils.copyProperties(form, orderBean);
 			// 会員情報をViewに渡す
-			model.addAttribute("order", userBean);
+			model.addAttribute("order", orderBean);
 		}
 		return "order/regist/order_address_input";
 	}
-
+	 
+	
+	
 	// 支払い方法画面の表示
 	@RequestMapping(path = "/payment/input", method = RequestMethod.POST)
 	public String inputPayment(@Valid @ModelAttribute OrderForm form, BindingResult result, Model model) {
@@ -91,19 +92,19 @@ public class OrderRegistCustomerController {
 		}
 
 		OrderBean orderBean = new OrderBean();
-		User user = new User();
 		// 入力値を会員情報にコピー
 		BeanUtils.copyProperties(form, orderBean);
-
 		// 会員情報をViewに渡す
 		model.addAttribute("order", orderBean);
-		model.addAttribute("user", user);
 
 		return "order/regist/order_payment_input";
 	}
-
+	
+	
+	
 	@RequestMapping(path = "/order/check", method = RequestMethod.POST)
 	public String checkOrder(@ModelAttribute OrderForm form, Model model) {
+		
 		// UserエンティティとOrderBeanのオブジェクトを作成
 		User user = new User();
 		OrderBean orderBean = new OrderBean();
@@ -111,12 +112,10 @@ public class OrderRegistCustomerController {
 		// 入力値を会員情報にコピー
 		BeanUtils.copyProperties(form, orderBean);
 
-		// 会員情報をViewに渡す
-
-		model.addAttribute("user", user);
-
+		//買い物かごリストの呼び出し
 		List<OrderItemBean> orderItemBean = new ArrayList<>();
 		List<BasketBean> items = (ArrayList) session.getAttribute("orderItem");
+		
 		// 在庫が0のリスト
 		List<String> none = new ArrayList<>();
 		// 注文数のほうが多い時のリスト
@@ -124,7 +123,9 @@ public class OrderRegistCustomerController {
 
 		Integer total = 0;
 
+		//商品の種類数分繰り返し
 		for (int i = items.size() - 1; i >= 0; i--) {
+			
 			// 買い物かごの中に入っている商品を取得
 			BasketBean basketBean = items.get(i);
 			OrderItemBean orderitembean = new OrderItemBean();
@@ -135,8 +136,8 @@ public class OrderRegistCustomerController {
 				none.add(itemEntity.getName());
 				items.remove(i);
 
-				// 注文数＞在庫の時
-			} else if (itemEntity.getStock() < basketBean.getOrderNum()) {
+			// 注文数＞在庫の時
+			} else if (basketBean.getOrderNum() > itemEntity.getStock()) {
 
 				// miniListに追加
 				mini.add(itemEntity.getName());
@@ -150,8 +151,8 @@ public class OrderRegistCustomerController {
 				orderitembean.setImage(itemEntity.getImage());
 				orderitembean.setPrice(itemEntity.getPrice());
 				orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
-
 				total += orderitembean.getSubtotal();
+				
 				// OrderItemBeanの値をOrderItemBeanリストに追加
 				orderItemBean.add(orderitembean);
 
@@ -162,8 +163,6 @@ public class OrderRegistCustomerController {
 				orderitembean.setImage(itemEntity.getImage());
 				orderitembean.setPrice(itemEntity.getPrice());
 				orderitembean.setSubtotal(itemEntity.getPrice() * basketBean.getOrderNum());
-
-				// 購入商品の合計金額を算出
 				total += orderitembean.getSubtotal();
 
 				// OrderItemBeanの値をOrderItemBeanリストに追加
@@ -176,12 +175,12 @@ public class OrderRegistCustomerController {
 		model.addAttribute("none", none);
 		model.addAttribute("mini", mini);
 		session.setAttribute("orderItems", orderItemBean);
-		System.out.println(orderBean.getTotal());
 		return "order/regist/order_check";
 	}
 
 	
 	
+	//データベースにデータを登録
 	@RequestMapping(path = "/order/complete", method = RequestMethod.POST)
 	public String completeOrder(OrderForm form) {
 
