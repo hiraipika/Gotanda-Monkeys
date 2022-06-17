@@ -9,11 +9,20 @@
 <h2 class="title">買い物かご</h2>
 
 
-<!-- 		<div th:if="${#lists.isEmpty(BasketBean)}">
+
+		<div th:if="${#lists.isEmpty(session.orderItem)}">
 			<p th:text="#{basketList.none}"></p>
-		</div> -->
-	 	<table class="list_table basket" >
-	 	 <!-- th:if="!${#lists.isEmpty(OrderItemBean)}"-->
+		</div>
+		<div th:each="orderItem: ${session.orderItem}">
+			<p th:if="${checkStock}" th:text="${orderItem.name} + #{basketList.itemStockNone}"></p>
+		</div>
+		
+		
+		<div th:unless="${checkStock}">
+		
+	 	<table class="list_table.order" >
+	 	 <th:if="!${#lists.isEmpty(OrderItemBean)}">
+
 			<tr>
 				<th>商品名</th>
 				<th>数</th>
@@ -34,21 +43,20 @@
 					<input type="submit" value="削除"  class="delete" />
 				</form>
             </td>
-  <!--
+            
            <td>
-			 <div th:if="${#lists.isEmpty(items)}">
+           
+			 <div th:if="${#lists.isEmpty(session.orderItem)}">
 				<span th:text="#{basketList.itemStockNone}"></span>
 		    </div>
-
-		    <div th:if="!${#lists.isEmpty(items)}" >
-		    	<span th:text="${OrderNum.stock}"></span>
-		    </div>
-		    </td>-->
+		    </td> 
 
 
 			 <td th:text="${orderItem.stock}"></td>
 			 </tr>
              </table>
+             
+             </div>
 
 
 
@@ -56,15 +64,15 @@
 
 		<br>
 		<br>
-     	<form th:action="@{/address/input}" method="post">
-     	 <!--<radio_label<input type="hidden" name="id" th:value="${basket.itemId}" >-->
-		<input type="submit" value="ご注文のお手続き" class="radio_label" />
+     	 <form th:action="@{/address/input}" method="post">
+     		<input type="hidden" name="id" th:value="${session.orderNum}" >
+			<input type="submit" value="ご注文のお手続き" class="radio_label" />
 		</form>
 		<form th:action="@{/basket/allDelete}" method="get">
-		<!-- <input type="hidden" name="id" th:value="${inBasket}" /> -->
+		<!-- <input type="hidden" name="id" th:value="${}" /> -->
 		<input type="submit" value="買い物かごを空にする" class="delete" />
 		</form>
-       </div>
+</div>
 
 
 
