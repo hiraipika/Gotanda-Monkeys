@@ -68,7 +68,7 @@ public class ItemShowCustomerController {
 
 
 	@RequestMapping(path = "/item/detail")
-	public String showItem(Model model, Pageable pageable) {
+	public String showItem(Model model) {
 	// 商品情報を全件検索(新着順)
 			List<Item> itemList = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED);
 
@@ -119,9 +119,9 @@ public class ItemShowCustomerController {
 	 * @return "category/list/category_list" カテゴリ情報 一覧画面へ
 	 */
 	@RequestMapping(path = "/item/list/1")
-	public String showItemInsertDateDescIdAsc(Model model) {
+	public String showItemInsertDateDescIdAsc(Model model, Pageable pageable) {
 		// 商品情報を全件検索(新着順)
-		List<Item> itemList = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED);
+		List<Item> itemList =  itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(Constant.NOT_DELETED);
 
 		// エンティティ内の検索結果をJavaBeansにコピー
 		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);

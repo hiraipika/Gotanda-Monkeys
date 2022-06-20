@@ -24,6 +24,11 @@ public class BasketCustomerController {
 	@Autowired
 	HttpSession session;
 
+	//
+	@RequestMapping(path = "/basket/list")
+	public String basketList() {
+		  return "basket/basket_shopping";
+	  }
 	
 	//商品追加。
 	@RequestMapping(path = "/basket/add", method = RequestMethod.POST)
@@ -62,7 +67,6 @@ public class BasketCustomerController {
 			//スコープに挿入。
 			session.setAttribute("orderItem", items);
 			model.addAttribute("checkStock", checkStock);
-			
 			//スコープ
 			return "basket/basket_shopping";
 			

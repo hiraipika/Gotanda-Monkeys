@@ -7,20 +7,20 @@
 </head>
 <body class="main order_check" th:object="${orderForm}">
 	<h2 class="title">注文内容最終確認</h2>
-
 	<div class="user_info_form_area">
 
+	<!--在庫不足の時のメッセージ表示-->
 		<div th:each="none: ${none}">
 			<div th:if="!${#lists.isEmpty(none)}">
 				<p class="err" th:text="${none} + #{orderCheckList.none}"></p>
 			</div>
 		</div>
-
 		<div th:each="mini: ${mini}">
 			<div th:if="!${#lists.isEmpty(mini)}">
 				<p class="err" th:text="${mini} + #{orderCheckList.mini}"></p>
 			</div>
 		</div>
+
 
 		<table class="list_table item_detail">
 			<tr>
@@ -51,6 +51,7 @@
 			</tr>
 		</table>
 
+
 		<table class="detail_table address">
 			<caption class="table_caption">お届け先</caption>
 			<tr>
@@ -71,6 +72,7 @@
 			</tr>
 		</table>
 
+
 		<table class="detail_table pay">
 			<caption class="table_caption">お支払方法</caption>
 			<tr>
@@ -85,7 +87,9 @@
 			</tr>
 		</table>
 		
-		<form method="post" th:action="@{/order/complete}" th:object="${orderForm}">
+		
+		<!-- フォームで入力した値を次の画面に渡す -->
+		<form method="post" th:action="@{/order/complete}" th:object="${orderForm}" th:if="!${#lists.isEmpty(session.orderItems)}">
 			<input type="hidden" name="postalCode" th:value="${order.postalCode}" />
 			<input type="hidden" name="address" th:value="${order.address}" />
 			<input type="hidden" name="name" th:value="${order.name}" />
