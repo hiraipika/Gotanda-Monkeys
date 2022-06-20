@@ -91,11 +91,11 @@ public class BasketCustomerController {
 				bean.setOrderNum(bean.getOrderNum()-1);
 				
 				if(bean.getOrderNum()==0) {
-					
+				
 					items.remove(number);
-					
+						
 					boolean checkStock = checkIfStockIsOk(items,id);
-					
+				
 					model.addAttribute("checkStock", checkStock);
 					
 					return "basket/basket_shopping";
@@ -107,6 +107,8 @@ public class BasketCustomerController {
 				boolean checkStock = checkIfStockIsOk(items,id);
 				
 				model.addAttribute("checkStock", checkStock);
+				
+				
 				
 				return "basket/basket_shopping";
 			}
