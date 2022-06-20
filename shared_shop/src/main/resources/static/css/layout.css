@@ -26,7 +26,7 @@ body {
 
 h2,
 h3 {
-	font-size: 1em;
+	font-size: 1.5rem;
 	font-weight: normal;
 	margin: 0;
 	padding: 0;
@@ -56,7 +56,6 @@ li {
 li {
 	list-style-type: none;
 }
-
 
 /* スキルアップテクニック3
  * overflowプロパティの値hiddenを設定することで、要素は適切な高さをもつことができます。
@@ -312,6 +311,7 @@ aside.admin_menu {
 .check_message {
 	padding-top: 20px;
 	font-size: 1.2em;
+	color: #d34320;
 }
 .complete_message,
 .complete_link {
