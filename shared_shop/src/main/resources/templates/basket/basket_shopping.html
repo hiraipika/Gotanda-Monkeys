@@ -23,37 +23,39 @@
 		 
 		<!-- 「買い物かご」の出力 -->
 		<div>
+			<table th:if="${#lists.isEmpty(OrderItemBean)}">
 		
-			<tr>
-				<th>商品名</th>
-				<th>数</th>
-				<th>操作</th>
-				<th>在庫</th>
-			</tr>
+				<tr>
+					<th>商品名</th>
+					<th>数</th>
+					<th>操作</th>
+					<th>在庫</th>
+				</tr>
 			
-			<tr th:each="orderItem: ${session.orderItem}">
-
-			 <td><a th:href="@{/item/detail/{id}(id=${orderItem.id})}" th:text="${orderItem.name}"> </a></td>
-
-     		 	<td th:text="${orderItem.orderNum}"></td>
-
-          		<td>
-	            	<form th:action="@{/basket/delete}" method="post">
-						 <input type="hidden" name="id" th:value="${orderItem.id}"  />
-						<input type="submit" value="削除"  class="delete" />
-					</form>
-	            </td>
-            
-				<td>
-					 <div th:if="${#lists.isEmpty(session.orderItem)}">
-						<span th:text="#{basketList.itemStockNone}"></span>
-				    </div>
-			
-		    	</td> 
-		    	 <td th:text="${orderItem.stock}"></td>
-		     </tr>
+				<tr th:each="orderItem: ${session.orderItem}">
+	
+					 <td><a th:href="@{/item/detail/{id}(id=${orderItem.id})}" th:text="${orderItem.name}"> </a></td>
+	
+					<td th:text="${orderItem.orderNum}"></td>
+	
+	          		<td>
+		            	<form th:action="@{/basket/delete}" method="post">
+							 <input type="hidden" name="id" th:value="${orderItem.id}"  />
+							<input type="submit" value="削除"  class="delete" />
+						</form>
+		            </td>
+	            
+					<td>
+						 <div th:if="${#lists.isEmpty(session.orderItem)}">
+							<span th:text="#{basketList.itemStockNone}"></span>
+					    </div>
+				
+			    	</td> 
+			    	 <td th:text="${orderItem.stock}"></td>
+				</tr>
 			</table>
 		</div>
+		
 <div>
      	<form th:action="@{/address/input}" method="post">
      		<input type="hidden" name="id" th:value="${session.orderNum}" >
