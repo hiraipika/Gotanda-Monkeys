@@ -1,3 +1,4 @@
+
 package jp.co.sss.shop.controller.basket;
 
 import java.util.ArrayList;
@@ -23,16 +24,21 @@ public class BasketCustomerController {
 
 	@Autowired
 	HttpSession session;
-
-	//
+	
+	
 	@RequestMapping(path = "/basket/list")
 	public String basketList() {
+		
 		  return "basket/basket_shopping";
+		  
 	  }
+	
 	
 	//商品追加。
 	@RequestMapping(path = "/basket/add", method = RequestMethod.POST)
 	public String addItem(Integer id, Integer orderNum, Model model) {
+		
+		Item item = repository.getById(id);
 		
 		//買い物カゴに商品があるか確認
 		//ない場合は「リスト」の作成。ある場合は、既存のリストの呼び出し
@@ -49,7 +55,7 @@ public class BasketCustomerController {
 			
 			//スコープに挿入
 			session.setAttribute("orderItem", items);
-			System.out.println(items.get(0));
+	
 			return "basket/basket_shopping";
 
 		} else {
@@ -59,21 +65,29 @@ public class BasketCustomerController {
 
 			//アイテムが既にリストにあるか確認する。
 			//ある場合は上書き。ない場合は新たに作りリストに挿入。
-			items = elicitItemBean(items,id,orderNum);
+			Object box[] = elicitItemBean(items,id,orderNum);
 			
-			//在庫数のチェック
-			boolean checkStock = checkIfStockIsOk(items,id);
+			items = (List<BasketBean>)box[0];
+			
+			BasketBean bean2 = (BasketBean)box[1];
+			
+			if(bean2.getOrderNum() > item.getStock()) {
+				
+				model.addAttribute("err","在庫数を超えた注文ができません。");
+				
+				bean2.setOrderNum(item.getStock());
+				
+			}
 			
 			//スコープに挿入。
 			session.setAttribute("orderItem", items);
-			model.addAttribute("checkStock", checkStock);
+			
 			//スコープ
 			return "basket/basket_shopping";
 			
 		}
 		
 	}
-	
 	
 
 	@RequestMapping(path = "/basket/delete", method = RequestMethod.POST)
@@ -86,17 +100,14 @@ public class BasketCustomerController {
 			
 			for(BasketBean bean : items) {
 			//リストにカゴに入れたアイテムが存在した場合
+				
 			if(bean.getId()==id) {
 				
 				bean.setOrderNum(bean.getOrderNum()-1);
 				
 				if(bean.getOrderNum()==0) {
-				
+					
 					items.remove(number);
-						
-					boolean checkStock = checkIfStockIsOk(items,id);
-				
-					model.addAttribute("checkStock", checkStock);
 					
 					return "basket/basket_shopping";
 					
@@ -104,18 +115,13 @@ public class BasketCustomerController {
 				
 				items.set(number,bean);
 				
-				boolean checkStock = checkIfStockIsOk(items,id);
-				
-				model.addAttribute("checkStock", checkStock);
-				
-				
-				
 				return "basket/basket_shopping";
 			}
 			
 			number++;
 			
 			}
+			
 			return "basket/basket_shopping";
 	  }
 	
@@ -129,38 +135,13 @@ public class BasketCustomerController {
 	}
 	
 	
-	public boolean checkIfStockIsOk (List<BasketBean>items, Integer id) {
-		
-		Item item = repository.getById(id);
-		
-			for(BasketBean bean : items) {
-				
-				if(bean.getId()==id) {
-					
-					if(bean.getOrderNum()>=item.getStock()) {
-
-						return true;
-						
-					} else {
-						
-						return false;
-						
-					}
-					
-				}
-				
-			}
-			
-			//ここまでは到達しない。
-			return false;
-			
-	}
-	
-	
-	public List<BasketBean> elicitItemBean (List<BasketBean>items, Integer id, Integer orderNum) {
+	public Object[] elicitItemBean (List<BasketBean>items, Integer id, Integer orderNum) {
 		  
 		  //リスト内での要素の位置を調べるための変数。
+			Object[] box = new Object[2];
+			
 			int number=0;
+			
 			for(BasketBean bean : items) {
 			
 			//リストにカゴに入れたアイテムが存在した場合
@@ -171,33 +152,38 @@ public class BasketCustomerController {
 				//位置を指定し「上書き」
 				items.set(number,bean);
 				
-				return items;
+				box[0] = items;
+				
+				box[1] = bean;
+				
+				return box;
 	
 			} 
+			
 			number++;
+			
 		}
 				
 				BasketBean bean=stockChangerWithListAdding(id,orderNum);
 						
 				items.add(bean);
 				
-			return items;
+				box[0] = items;
+				
+				box[1] = bean;
+				
+				return box;
 			
 	}
 	
+	
 	public BasketBean stockChanger(BasketBean bean,Integer id, Integer orderNum) {
 		
-			Item item = repository.getById(id);
-			
-			bean.setOrderNum(bean.getOrderNum()+orderNum);
-			
-			//bean.setStock(bean.getStock()-orderNum);
-			
-			item.setStock(item.getStock()-orderNum);
-			
-			repository.save(item);
-			
-			return bean;
+		Item item= repository.getById(id);
+	
+		bean.setOrderNum(bean.getOrderNum()+orderNum);
+		
+		return bean;
 	}
 	
 	
@@ -206,6 +192,7 @@ public class BasketCustomerController {
 		Item item = repository.getById(id);
 		
 		String name = item.getName();
+		
 		Integer stock = item.getStock();
 		
 		BasketBean bean = new BasketBean(id,name,stock,orderNum);
@@ -213,4 +200,5 @@ public class BasketCustomerController {
 		return bean;
 		
 	}
+	
 }
