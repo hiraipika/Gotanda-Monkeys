@@ -14,7 +14,6 @@
 				<ul th:if="${#fields.hasErrors('*')}"  th:class="input_list" >
   					<li th:each="err : ${#fields.errors('*')}" th:text="${err}" th:class="error_list" ></li>
   				</ul>
-			<br>
 				<ul class="input_list" >
 					<li>
 						<label>

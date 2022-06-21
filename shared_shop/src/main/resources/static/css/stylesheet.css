@@ -511,6 +511,13 @@ select {
 .list_table.item_list th:last-of-type {
 	width:20%;
 }
+/* ---- 新着順、売上順の文字 ---- */
+.sortType{
+	font-size:16px;
+	padding-top: 20px;
+	margin-bottom: -20px;
+	
+}
 
 /* ---- 注文一覧 ---- */
 .list_table.order{
@@ -569,10 +576,12 @@ select {
 	border-radius: 6px;
 	font-weight: bold;
 }
-
+.input_message {
+	font-size : 18px;
+	padding : 15px;
+}
 
 /* ---- 商品一覧(運用管理者向け) ---- */
-
 
 
 
