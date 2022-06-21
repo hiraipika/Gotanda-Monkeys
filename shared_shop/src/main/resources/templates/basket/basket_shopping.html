@@ -6,35 +6,34 @@
 <title>買い物かご | シェアードショップ</title>
 </head>
 <body>
+
 <h2 class="title">買い物かご</h2>
 
-
-
+		<!-- 「買い物かご」に何も無いときのメッセージの出力 -->
 		<div th:if="${#lists.isEmpty(session.orderItem)}">
 			<p th:text="#{basketList.none}"></p>
 		</div>
+		
+		<!-- 在庫数を超過したときのエラーメッセージ 
 		<div th:each="orderItem: ${session.orderItem}">
-			<p th:if="${checkStock}" th:text="${orderItem.name} + #{basketList.itemStockNone}"></p>
-		</div>
+			<p th:if="${orderItem.stock < orderItem.orderNum}" th:text="${orderItem.name} + #{basketList.itemStockNone}"></p>
+		</div> -->
 		
-		<p th:if="${checkStock}"> 在庫数を超えています </p>
-		<div th:unless="${checkStock}">
+			<p th:text="${err}">在庫数を超過した注文はできません。</p>
+		 
+		<!-- 「買い物かご」の出力 -->
+		<div>
 		
-	 		<table th:if="${#lists.isEmpty(OrderItemBean)}">
-	 		
-
-			<tr>				
+			<tr>
 				<th>商品名</th>
 				<th>数</th>
 				<th>操作</th>
 				<th>在庫</th>
 			</tr>
 			
-			
-			
 			<tr th:each="orderItem: ${session.orderItem}">
 
-				 <td> <a th:href="@{/item/detail/{id}(id=${orderItem.id})}" th:text="${orderItem.name}"> </a></td>
+			 <td><a th:href="@{/item/detail/{id}(id=${orderItem.id})}" th:text="${orderItem.name}"> </a></td>
 
      		 	<td th:text="${orderItem.orderNum}"></td>
 
@@ -45,8 +44,7 @@
 					</form>
 	            </td>
             
-           		<td>
-           
+				<td>
 					 <div th:if="${#lists.isEmpty(session.orderItem)}">
 						<span th:text="#{basketList.itemStockNone}"></span>
 				    </div>
@@ -56,22 +54,17 @@
 		     </tr>
 			</table>
 		</div>
-
 <div>
-
-		<br>
-		<br>
-     	 <form th:action="@{/address/input}" method="post">
+     	<form th:action="@{/address/input}" method="post">
      		<input type="hidden" name="id" th:value="${session.orderNum}" >
 			<input type="submit" value="ご注文のお手続き" class="radio_label" />
 		</form>
+			
 		<form th:action="@{/basket/allDelete}" method="get">
-		<!-- <input type="hidden" name="id" th:value="${}" /> -->
 		<input type="submit" value="買い物かごを空にする" class="delete" />
 		</form>
+		
 </div>
-
-
 
 
 </body>
