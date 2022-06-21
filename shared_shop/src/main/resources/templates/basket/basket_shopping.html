@@ -23,7 +23,7 @@
 		 
 		<!-- 「買い物かご」の出力 -->
 		<div>
-			<table th:if="${#lists.isEmpty(OrderItemBean)}">
+			<table th:if="!${#lists.isEmpty(session.orderItem)}" class="list_table basket">
 		
 				<tr>
 					<th>商品名</th>
@@ -44,19 +44,19 @@
 							<input type="submit" value="削除"  class="delete" />
 						</form>
 		            </td>
-	            
+	            	<!-- 
 					<td>
 						 <div th:if="${#lists.isEmpty(session.orderItem)}">
 							<span th:text="#{basketList.itemStockNone}"></span>
 					    </div>
 				
-			    	</td> 
+			    	</td>  -->
 			    	 <td th:text="${orderItem.stock}"></td>
 				</tr>
 			</table>
 		</div>
 		
-<div>
+<div th:if="!${#lists.isEmpty(session.orderItem)}">
      	<form th:action="@{/address/input}" method="post">
      		<input type="hidden" name="id" th:value="${session.orderNum}" >
 			<input type="submit" value="ご注文のお手続き" class="radio_label" />
