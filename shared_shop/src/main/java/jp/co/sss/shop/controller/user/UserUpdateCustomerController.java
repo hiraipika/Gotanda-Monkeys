@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
@@ -96,6 +98,16 @@ public class UserUpdateCustomerController {
 		
 		//会員情報を保存
 		userRepository.save(user);
+		
+		// セッションからログインユーザーの情報を取得
+		UserBean userBean = (UserBean) session.getAttribute("user");
+		// 変更対象の会員が、ログインユーザと一致していた場合セッション情報を変更
+		if (user.getId().equals(userBean.getId())) {
+			// Userエンティティの各フィールドの値をUserBeanにコピー
+			BeanUtils.copyProperties(form, userBean);
+			// 会員情報をViewに渡す
+			session.setAttribute("user", userBean);
+		}
 		
 		return "user/update/user_update_complete";
 	}
