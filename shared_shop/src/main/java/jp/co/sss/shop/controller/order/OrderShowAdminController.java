@@ -56,7 +56,7 @@ public class OrderShowAdminController {
 
 		// すべての注文情報を取得
 		Page<Order> pageList = orderRepository.findAllOrderByInsertDateDesc(pageable);	
-		List<Order> orderList = pageList.getContent();;
+		List<Order> orderList = pageList.getContent();
 
 		// 注文情報リストを生成
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();

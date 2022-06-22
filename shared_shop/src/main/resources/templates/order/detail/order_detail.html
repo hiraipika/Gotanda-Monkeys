@@ -64,7 +64,7 @@
 				<td th:text="${total}"></td>
 			</tr>
 		</table>
-		<form th:action="@{/order/list}"  class="detail_button_area">
+		<form method="get" action="/shared_shop/order/list"  class="detail_button_area">
 		    <input type="submit" value="戻る" />
 		</form>
 </body>
