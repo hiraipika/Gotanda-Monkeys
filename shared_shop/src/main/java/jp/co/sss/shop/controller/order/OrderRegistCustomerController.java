@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.OrderBean;
@@ -71,25 +72,33 @@ public class OrderRegistCustomerController {
 
 		} else {
 			OrderBean orderBean = new OrderBean();
-			UserBean userBean = new UserBean();
 			
 			BeanUtils.copyProperties(form, orderBean);
 			// 会員情報をViewに渡す
-			model.addAttribute("order", orderBean);
+//			model.addAttribute("order", orderBean);
 		}
 		return "order/regist/order_address_input";
 	}
 	 
 	
-	
+	  @RequestMapping(path = "/address/input", method = RequestMethod.GET) 
+	  public String inputAddressRedirect() {
+		  return "order/regist/order_address_input"; 
+	  }
+	 	
 	// 支払い方法画面の表示
 	@RequestMapping(path = "/payment/input", method = RequestMethod.POST)
-	public String inputPayment(@Valid @ModelAttribute OrderForm form, BindingResult result, Model model) {
+	public String inputPayment(@Valid @ModelAttribute OrderForm form, BindingResult result, Model model,  RedirectAttributes redirectAttributes) {
 
 		// お届け先入力でエラーがあったらエラーメッセージを表示
 		if (result.hasErrors()) {
-			return "order/regist/order_address_input";
-		}
+				// 入力チェック結果の情報をフラッシュスコープに保存
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.orderForm", result);
+				// Form クラスの情報をフラッシュスコープに保存
+				redirectAttributes.addFlashAttribute("orderForm", form);
+				return "redirect:/address/input";
+				}
+
 
 		OrderBean orderBean = new OrderBean();
 		// 入力値を会員情報にコピー
