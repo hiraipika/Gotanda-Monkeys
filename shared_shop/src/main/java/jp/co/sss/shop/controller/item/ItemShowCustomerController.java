@@ -50,7 +50,7 @@ public class ItemShowCustomerController {
 	@RequestMapping(path = "/")
 	public String index(Model model) {
 		
-		List<Item> itemList = itemRepository.findByOrder();
+		List<Item> itemList = itemRepository.findByOrderForTop();
 		
 		// エンティティ内の検索結果をJavaBeansにコピー
 		List<ItemBean> itemBeanList = BeanCopy.copyEntityToItemBean(itemList);
