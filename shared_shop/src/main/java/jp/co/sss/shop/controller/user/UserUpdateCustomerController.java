@@ -42,10 +42,34 @@ public class UserUpdateCustomerController {
 	 * @return "user/update/user_update_input" 会員情報 変更入力画面へ
 	 **/
 	@RequestMapping(path="/user/update/input", method=RequestMethod.POST)
-	public String userUpdateInput(@ModelAttribute UserForm form, Model model, Integer id) {
-		
-		User user = userRepository.getById(id);
-		session.setAttribute("users", user);
+	public String userUpdateInput(boolean backFlg, @ModelAttribute UserForm form, Model model, Integer id) {
+				
+		// 戻るボタンかどうかを判定
+				if (!backFlg) {
+
+					// 変更対象の会員情報を取得
+					User user = userRepository.getById(form.getId());
+					UserBean userBean = new UserBean();
+
+					// Userエンティティの各フィールドの値をUserBeanにコピー
+					BeanUtils.copyProperties(user, userBean);
+
+					// 会員情報をViewに渡す
+					model.addAttribute("user", userBean);
+
+				} else {
+
+					UserBean userBean = new UserBean();
+					// 入力値を会員情報にコピー
+					BeanUtils.copyProperties(form, userBean);
+
+					// 会員情報をViewに渡す
+					model.addAttribute("user", userBean);
+
+				}
+				
+		//User user = userRepository.getById(id);
+		//session.setAttribute("users", user);
 		
 		return "user/update/user_update_input";
 	}
@@ -65,6 +89,14 @@ public class UserUpdateCustomerController {
 	public String userDoUpdateInput(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session, Model model){
 
 		if(result.hasErrors()) {
+			
+			UserBean userBean = new UserBean();
+			// 入力値を会員情報にコピー
+			BeanUtils.copyProperties(form, userBean);
+
+			// 会員情報をViewに渡す
+			model.addAttribute("user", userBean);
+			
 			return "user/update/user_update_input";
 			
 		}
