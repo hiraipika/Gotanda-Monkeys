@@ -23,54 +23,54 @@
 					<li>
 						<label>
 							<span class="input_title">メールアドレス</span>
-							<input type="text" name="email" th:value="${session.users.email}"/>
+							<input type="text" name="email" th:value="${user.email}"/>
 						</label>
 						
 					</li>
 					<li>
 						<label>
 							<span class="input_title">パスワード</span>
-							<input type="password" name="password" th:value="${session.users.password}"/>
+							<input type="password" name="password" th:value="${user.password}"/>
 						</label>
 					    
 					</li>
 					<li>
 						<label>
 							<span class="input_title">氏名</span>
-							<input type="text" name="name" th:value="${session.users.name}"/>
+							<input type="text" name="name" th:value="${user.name}"/>
 						</label>
 					    
 					</li>
 					<li>
 						<label>
 							<span class="input_title">郵便番号</span>
-							<input type="text" name="postalCode" th:value="${session.users.postalCode}"/>
+							<input type="text" name="postalCode" th:value="${user.postalCode}"/>
 						</label>
 					   
 					</li>
 					<li>
 						<label>
 							<span class="input_title">住所</span>
-							<textarea name="address" rows="6" th:text="${session.users.address}"></textarea>
+							<textarea name="address" rows="6" th:text="${user.address}"></textarea>
 						</label>
 					    
 					</li>
 					<li>
 						<label>
 							<span class="input_title">電話番号</span>
-							<input type="text" name="phoneNumber" th:value="${session.users.phoneNumber}"/>
+							<input type="text" name="phoneNumber" th:value="${user.phoneNumber}"/>
 						</label>
 					   
 					</li>
 				</ul>
-				<input type="hidden" name="authority" th:value="${session.users.authority}" />
-				<input type="hidden" name="id" th:value="${session.users.id}"/>
+				<input type="hidden" name="authority" th:value="${user.authority}" />
+				<input type="hidden" name="id" th:value="${user.id}"/>
 				<input type="hidden" name="backflg" value=0 />
 				<input type="submit" value="確認" class="send_button" />
 			</form>
 			
-		     <form method="post" th:action="@{/user/detail/{id}(id=${session.users.id})}">
-			    <input type="hidden" name="id" th:value="${session.users.id}"/>
+		     <form method="post" th:action="@{/user/detail/{id}(id=${user.id})}">
+			    <input type="hidden" name="id" th:value="${user.id}"/>
 				<input type="submit" value="戻る" class="back_button" />
 			</form>
 			
