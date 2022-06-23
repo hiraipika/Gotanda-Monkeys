@@ -69,8 +69,8 @@
 				<input type="submit" value="確認" class="send_button" />
 			</form>
 			
-		     <form method="post" th:action="@{/user/detail/{id}(id=${user.id})}">
-			    <input type="hidden" name="id" th:value="${user.id}"/>
+		     <form method="get" th:action="@{/user/detail/}">
+			    <!-- input type="hidden" name="id" th:value="${user.id}"-->
 				<input type="submit" value="戻る" class="back_button" />
 			</form>
 			
