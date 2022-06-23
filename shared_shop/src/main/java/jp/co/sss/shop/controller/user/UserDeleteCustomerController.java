@@ -114,6 +114,6 @@ public class UserDeleteCustomerController {
 		// 会員情報をViewに渡す
 		model.addAttribute("user", userBean);
 
-		return "user/detail/{id}";
+		return "redirect:user/detail";
 	}
 }
