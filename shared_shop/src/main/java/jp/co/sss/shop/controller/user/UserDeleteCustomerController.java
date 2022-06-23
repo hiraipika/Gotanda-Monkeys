@@ -74,7 +74,7 @@ public class UserDeleteCustomerController {
 		// 会員情報を保存
 		userRepository.save(user);
 		
-		//
+		//ログアウト処理
 		session.removeAttribute("user");
 
 		return "user/delete/user_delete_complete";
