@@ -67,9 +67,6 @@ public class UserUpdateCustomerController {
 					model.addAttribute("user", userBean);
 
 				}
-				
-		//User user = userRepository.getById(id);
-		//session.setAttribute("users", user);
 		
 		return "user/update/user_update_input";
 	}
