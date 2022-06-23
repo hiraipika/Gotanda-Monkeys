@@ -46,7 +46,7 @@ public class UserForm {
 	 * 郵便番号
 	 */
 	@NotBlank
-	@Size(min = 7, max = 7, message = "郵便番号は7文字で入力してください。")
+	@Size(min = 7, max = 8, message = "郵便番号は7文字で入力してください。")
 	@Pattern(regexp = "^[0-9]+$", message = "{userRegist.numberpattern.message}")
 	private String postalCode;
 
