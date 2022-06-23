@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
@@ -75,6 +76,16 @@ public class UserUpdateAdminController {
 		return "user/update/user_update_input_admin";
 	}
 
+	
+	
+	  @RequestMapping(path = "/user/update/input/admin", method = RequestMethod.GET) 
+	  public String  updateInput(Model model) {
+		  if ( ! model.containsAttribute("user")) {
+			  return "redirect:/user/list";
+		  }
+		  return "user/update/user_update_input_admin";
+	  }
+	  
 	/**
 	 * 会員情報 変更確認処理
 	 *
@@ -86,22 +97,28 @@ public class UserUpdateAdminController {
 	 * 入力値エラーなし："user/update/user_update_check_admin" 会員情報 変更確認画面へ
 	 */
 	@RequestMapping(path = "/user/update/check/admin", method = RequestMethod.POST)
-	public String updateCheck( Model model, @Valid @ModelAttribute UserForm form, BindingResult result) {
+	public String updateCheck( Model model, @Valid @ModelAttribute UserForm form, BindingResult result,  RedirectAttributes redirectAttributes) {
 		// 入力値にエラーがあった場合、会員情報 変更入力画面表示処理に戻る
+
 		if (result.hasErrors()) {
+			// 入力チェック結果の情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userForm", result);
 			
-			UserBean userBean = new UserBean();
-			// 入力値を会員情報にコピー
-			BeanUtils.copyProperties(form, userBean);
+		UserBean userBean = new UserBean();
+		// 入力値を会員情報にコピー
+		BeanUtils.copyProperties(form, userBean);
+		// Form クラスの情報をフラッシュスコープに保存
+		redirectAttributes.addFlashAttribute("user", userBean);
 
-			// 会員情報をViewに渡す
-			model.addAttribute("user", userBean);
-			
-			return "user/update/user_update_input_admin";
-		}
-
-		return "user/update/user_update_check_admin";
+		// 会員情報をViewに渡す
+//		model.addAttribute("user", userBean);
+		
+		return "redirect:/user/update/input/admin";
 	}
+
+	return "user/update/user_update_check_admin";
+}
+
 
 	/**
 	 * 会員情報変更完了処理

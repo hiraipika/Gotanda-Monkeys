@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
@@ -65,6 +66,7 @@ public class ItemRegistAdminController {
 		System.out.println("registInput");
 		if (!model.containsAttribute("itemForm")) {
 			model.addAttribute("itemForm", new ItemForm());
+			return "item/regist/item_regist_input";
 		}
 		System.out.println("model：" + model.getAttribute("categories"));
 		System.out.println("session：" + session.getAttribute("categories"));
@@ -98,10 +100,14 @@ public class ItemRegistAdminController {
 	 *         
 	 */
 	@RequestMapping(path = "/item/regist/check", method = RequestMethod.POST)
-	public String registCheck(@Valid @ModelAttribute ItemForm form, BindingResult result) {
+	public String registCheck(@Valid @ModelAttribute ItemForm form, BindingResult result, RedirectAttributes redirectAttributes) {
 
 		if (result.hasErrors()) {
-			return "item/regist/item_regist_input";
+			// 入力チェック結果の情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.itemForm", result);
+			// Form クラスの情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("itemForm", form);
+			return "redirect:/item/regist/input";
 		}
 
 		if (form.getImageFile().getSize() > 0) {

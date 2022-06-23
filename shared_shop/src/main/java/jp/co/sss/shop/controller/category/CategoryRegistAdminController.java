@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.CategoryBean;
 import jp.co.sss.shop.entity.Category;
@@ -52,10 +53,12 @@ public class CategoryRegistAdminController {
 
 		if (!model.containsAttribute("categoryForm")) {
 			model.addAttribute("categoryForm", new CategoryForm());
+			return "category/regist/category_regist_input";
 		}
 		return "category/regist/category_regist_input";
 
 	}
+	
 
 	/**
 	 * POSTメソッドを利用してカテゴリ情報登録画面に戻る処理
@@ -64,8 +67,7 @@ public class CategoryRegistAdminController {
 	 * @return "category/regist/category_regist_input"
 	 */
 	@RequestMapping(path = "/category/regist/input" , method = RequestMethod.POST)
-	public String registInputBack(CategoryForm form ) {
-
+	public String registInputBack(CategoryForm form) {
 		return "category/regist/category_regist_input";
 
 	}
@@ -80,13 +82,16 @@ public class CategoryRegistAdminController {
 	 * 	入力値エラーなし："category/regist/category_regist_check" カテゴリ情報 登録確認画面へ
 	 */
 	@RequestMapping(path = "/category/regist/check", method = RequestMethod.POST)
-	public String registCheck(@Valid @ModelAttribute CategoryForm form, BindingResult result) {
+	public String registCheck(@Valid @ModelAttribute CategoryForm form, BindingResult result, RedirectAttributes redirectAttributes) {
 
 		// 入力値にエラーがあった場合、エラー情報を保持したまま入力画面に戻る
-		if (result.hasErrors()) {
-
-			return "category/regist/category_regist_input";
-		}
+			if (result.hasErrors()) {
+			// 入力チェック結果の情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.categoryForm", result);
+			// Form クラスの情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("categoryForm", form);
+			return "redirect:/category/regist/input";
+			}
 		return "category/regist/category_regist_check";
 	}
 

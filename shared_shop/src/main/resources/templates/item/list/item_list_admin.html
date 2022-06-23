@@ -8,7 +8,7 @@
 <body class="admin item_list_admin" th:object="${loginForm}">
 
 		<h2 class="title">商品一覧</h2>
-		<form th:action="@{/item/regist/input}" class="sign_up_form">
+		<form th:action="@{/item/regist/input}" class="sign_up_form" method="get">
 			<input type="submit" value="商品新規登録" class="menu_button" />
 		</form>
 

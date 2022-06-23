@@ -1,6 +1,5 @@
 package jp.co.sss.shop.controller.user;
 
-
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
@@ -24,16 +24,15 @@ import jp.co.sss.shop.repository.UserRepository;
 
 @Controller
 public class UserUpdateCustomerController {
-	
-	//会員情報
+
+	// 会員情報
 	@Autowired
 	UserRepository userRepository;
-	
-	//セッション
+
+	// セッション
 	@Autowired
 	HttpSession session;
-	
-	
+
 	/**
 	 * 会員情報の変更入力画面表示処理
 	 *
@@ -41,80 +40,84 @@ public class UserUpdateCustomerController {
 	 * @param model Viewとの値受渡し
 	 * @return "user/update/user_update_input" 会員情報 変更入力画面へ
 	 **/
-	@RequestMapping(path="/user/update/input", method=RequestMethod.POST)
+	@RequestMapping(path = "/user/update/input", method = RequestMethod.POST)
 	public String userUpdateInput(boolean backFlg, @ModelAttribute UserForm form, Model model, Integer id) {
-				
+
 		// 戻るボタンかどうかを判定
-				if (!backFlg) {
+		if (!backFlg) {
 
-					// 変更対象の会員情報を取得
-					User user = userRepository.getById(form.getId());
-					UserBean userBean = new UserBean();
+			// 変更対象の会員情報を取得
+			User user = userRepository.getById(form.getId());
+			UserBean userBean = new UserBean();
 
-					// Userエンティティの各フィールドの値をUserBeanにコピー
-					BeanUtils.copyProperties(user, userBean);
+			// Userエンティティの各フィールドの値をUserBeanにコピー
+			BeanUtils.copyProperties(user, userBean);
 
-					// 会員情報をViewに渡す
-					model.addAttribute("user", userBean);
+			// 会員情報をViewに渡す
+			model.addAttribute("user", userBean);
 
-				} else {
+		} else {
 
-					UserBean userBean = new UserBean();
-					// 入力値を会員情報にコピー
-					BeanUtils.copyProperties(form, userBean);
+			UserBean userBean = new UserBean();
+			// 入力値を会員情報にコピー
+			BeanUtils.copyProperties(form, userBean);
+			// 会員情報をViewに渡す
+			model.addAttribute("user", userBean);
+		}
 
-					// 会員情報をViewに渡す
-					model.addAttribute("user", userBean);
-
-				}
-		
 		return "user/update/user_update_input";
 	}
-	
-	
+
+	@RequestMapping(path = "/user/update/input", method = RequestMethod.GET)
+	public String updateInput(Model model) {
+		if (!model.containsAttribute("user")) {
+			return "redirect:/user/detail";
+		}
+		return "user/update/user_update_input";
+	}
+
 	/**
 	 * 会員情報 変更確認処理
 	 *
 	 * @param form   会員情報フォーム
 	 * @param model  Viewとの値受渡し
 	 * @param result 入力チェック結果
-	 * @return 
-	 * 入力値エラーあり："user/update/user_update_input" 会員情報変更入力画面へ 
-	 * 入力値エラーなし："user/update/user_update_check" 会員情報 変更確認画面へ
+	 * @return 入力値エラーあり："user/update/user_update_input" 会員情報変更入力画面へ
+	 *         入力値エラーなし："user/update/user_update_check" 会員情報 変更確認画面へ
 	 */
-	@RequestMapping(path="/user/update/check", method=RequestMethod.POST)
-	public String userDoUpdateInput(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session, Model model){
+	@RequestMapping(path = "/user/update/check", method = RequestMethod.POST)
+	public String userDoUpdateInput(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session,
+			Model model, RedirectAttributes redirectAttributes) {
 
-		if(result.hasErrors()) {
+		
+		if (result.hasErrors()) {
 			
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userForm", result);
 			UserBean userBean = new UserBean();
 			// 入力値を会員情報にコピー
 			BeanUtils.copyProperties(form, userBean);
+			redirectAttributes.addFlashAttribute("user", form);
 
 			// 会員情報をViewに渡す
 			model.addAttribute("user", userBean);
-			
-			return "user/update/user_update_input";
-			
+			return "redirect:/user/update/input";
 		}
-
 		return "user/update/user_update_check";
 	}
-	
-	//会員情報変更完了画面表示
-	@RequestMapping(path="/user/update/complete", method=RequestMethod.POST)
+
+	// 会員情報変更完了画面表示
+	@RequestMapping(path = "/user/update/complete", method = RequestMethod.POST)
 	public String doUserCheck(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session) {
 
 		// 変更対象の会員情報を取得
-		User user= userRepository.getById(form.getId());
-		
-		
-		//会員情報を登録した日付の取得
+		User user = userRepository.getById(form.getId());
+
+		// 会員情報を登録した日付の取得
 		java.util.Date utilDate = new java.util.Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = Date.valueOf(df.format(utilDate));
-		
-		//入力した情報の更新
+
+		// 入力した情報の更新
 		user.setEmail(form.getEmail());
 		user.setPassword(form.getPassword());
 		user.setName(form.getName());
@@ -124,10 +127,10 @@ public class UserUpdateCustomerController {
 		user.setAuthority(2);
 		user.setDeleteFlag(0);
 		user.setInsertDate(date);
-		
-		//会員情報を保存
+
+		// 会員情報を保存
 		userRepository.save(user);
-		
+
 		// セッションからログインユーザーの情報を取得
 		UserBean userBean = (UserBean) session.getAttribute("user");
 		// 変更対象の会員が、ログインユーザと一致していた場合セッション情報を変更
@@ -137,7 +140,7 @@ public class UserUpdateCustomerController {
 			// 会員情報をViewに渡す
 			session.setAttribute("user", userBean);
 		}
-		
+
 		return "user/update/user_update_complete";
 	}
 }

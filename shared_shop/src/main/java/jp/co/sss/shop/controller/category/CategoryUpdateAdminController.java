@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.CategoryBean;
 import jp.co.sss.shop.entity.Category;
@@ -77,6 +78,15 @@ public class CategoryUpdateAdminController {
 
 		return "category/update/category_update_input";
 	}
+	
+	
+	  @RequestMapping(path = "/category/update/input", method = RequestMethod.GET) 
+	  public String  updateInput(Model model) {
+		  if ( ! model.containsAttribute("categoryForm")) {
+			  return "redirect:/category/list";
+		  }
+		  return "category/update/category_update_input";
+	  }
 
 	/**
 	 * カテゴリ情報変更確認処理
@@ -88,16 +98,19 @@ public class CategoryUpdateAdminController {
 	 *   入力値エラーあり："/category/update/category_update_input" カテゴリ情報変更入力画面へ
 	 *   入力値エラーなし："category/update/category_update_check" カテゴリ情報 変更確認画面へ
 	 */
-	@RequestMapping(path = "/category/update/check", method = RequestMethod.POST)
-	public String updateCheck(Model model, @Valid @ModelAttribute CategoryForm form, BindingResult result) {
+		@RequestMapping(path = "/category/update/check", method = RequestMethod.POST)
+		public String updateCheck(Model model, @Valid @ModelAttribute CategoryForm form, BindingResult result, RedirectAttributes redirectAttributes) {
 
-		// 入力値にエラーがあった場合、入力画面に戻る
-		if (result.hasErrors()) {
-			return "category/update/category_update_input";
+			// 入力値にエラーがあった場合、入力画面に戻る
+			if (result.hasErrors()) {
+					// 入力チェック結果の情報をフラッシュスコープに保存
+					redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.categoryForm", result);
+					// Form クラスの情報をフラッシュスコープに保存
+					redirectAttributes.addFlashAttribute("categoryForm", form);
+					return "redirect:/category/update/input";
+					}
+			return "category/update/category_update_check";
 		}
-
-		return "category/update/category_update_check";
-	}
 
 	/**
 	 * カテゴリ情報変更完了処理

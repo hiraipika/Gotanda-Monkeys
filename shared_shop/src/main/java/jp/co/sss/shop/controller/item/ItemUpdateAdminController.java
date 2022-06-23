@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.ItemBean;
 import jp.co.sss.shop.entity.Category;
@@ -74,6 +75,14 @@ public class ItemUpdateAdminController {
 		return "item/update/item_update_input";
 	}
 	
+	  @RequestMapping(path = "/item/update/input", method = RequestMethod.GET) 
+	  public String  updateInput(Model model) {
+		  if ( ! model.containsAttribute("item")) {
+			  return "redirect:/item/list/admin";
+		  }
+		  return "item/update/item_update_input";
+	  }
+	
 	/**
 	 * 商品情報変更確認処理
 	 *
@@ -81,18 +90,16 @@ public class ItemUpdateAdminController {
 	 * @return "item/update/item_update_check" 商品情報 変更確認画面へ
 	 */
 	@RequestMapping(path = "/item/update/check", method = RequestMethod.POST)
-	public String updateCheck( Model model,@Valid @ModelAttribute ItemForm form, BindingResult result) {
+	public String updateCheck( Model model,@Valid @ModelAttribute ItemForm form, BindingResult result, RedirectAttributes redirectAttributes) {
 
 		// 入力値にエラーがあった場合、入力画面に戻る
 		if (result.hasErrors()) {
-
-			ItemBean itemBean = BeanCopy.copyFormToBean(form);
-
-			// 商品情報をViewに渡す
-			model.addAttribute("item", itemBean);
-
-			return "item/update/item_update_input";
-		}
+			// 入力チェック結果の情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.itemForm", result);
+			redirectAttributes.addFlashAttribute("item", form);
+			
+			return "redirect:/item/update/input";
+			}
 
 		if (form.getImageFile().getSize() > 0) {
 			// 画像ファイルがある場合、ファイルを生成

@@ -61,28 +61,26 @@ public class OrderRegistCustomerController {
 
 			// お届け先入力欄に初期値を設定する処理
 			OrderBean orderBean = new OrderBean();
-			OrderForm orderForm = new OrderForm();
 			// Userエンティティの各フィールドの値をorderBeanにコピー
 			BeanUtils.copyProperties(user, orderBean);
-			// OrderBeanエンティティの各フィールドの値をorderFormにコピー
-			BeanUtils.copyProperties(orderBean, orderForm);
 
 			// 会員情報をViewに渡す
-			model.addAttribute("orderForm", orderForm);
+			model.addAttribute("orderForm", orderBean);
 
 		} else {
 			OrderBean orderBean = new OrderBean();
 			
 			BeanUtils.copyProperties(form, orderBean);
-			// 会員情報をViewに渡す
-//			model.addAttribute("order", orderBean);
 		}
 		return "order/regist/order_address_input";
 	}
 	 
 	
 	  @RequestMapping(path = "/address/input", method = RequestMethod.GET) 
-	  public String inputAddressRedirect() {
+	  public String inputAddressRedirect(Model model) {
+		  if ( ! model.containsAttribute("orderForm")) {
+			  return "redirect:/basket/list";
+		  }
 		  return "order/regist/order_address_input"; 
 	  }
 	 	
@@ -98,7 +96,6 @@ public class OrderRegistCustomerController {
 				redirectAttributes.addFlashAttribute("orderForm", form);
 				return "redirect:/address/input";
 				}
-
 
 		OrderBean orderBean = new OrderBean();
 		// 入力値を会員情報にコピー

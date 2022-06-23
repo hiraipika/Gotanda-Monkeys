@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
@@ -49,6 +50,8 @@ public class UserRegistAdminController {
 			if (user.getAuthority() == 0) {
 				// システム管理者としてログイン中の場合、入力フォーム「権限」の初期値を0（システム管理者）に指定する。
 				userForm.setAuthority(user.getAuthority());
+				model.addAttribute("userForm", new UserForm());
+				return "user/regist/user_regist_input";
 			}
 			model.addAttribute("userForm", userForm);
 		}
@@ -76,11 +79,15 @@ public class UserRegistAdminController {
 	 *         入力値エラーなし："user/regist/user_regist_check_admin" 会員情報 登録確認画面へ
 	 */
 	@RequestMapping(path = "/user/regist/check/admin", method = RequestMethod.POST)
-	public String registCheck(@Valid @ModelAttribute UserForm form, BindingResult result) {
+	public String registCheck(@Valid @ModelAttribute UserForm form, BindingResult result, RedirectAttributes redirectAttributes) {
 
 		// 入力値にエラーがあった場合、会員情報 入力画面表示処理に戻る
 		if (result.hasErrors()) {
-			return "user/regist/user_regist_input_admin";
+			// 入力チェック結果の情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userForm", result);
+			// Form クラスの情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("userForm", form);
+			return "redirect:/user/regist/input/admin";
 		}
 
 		return "user/regist/user_regist_check_admin";

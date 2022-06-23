@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
@@ -31,9 +32,14 @@ public class UserRegistCustomerController {
 	
 	//新規会員登録入力画面に遷移する。
 	@RequestMapping(path="/user/regist/input", method=RequestMethod.GET)
-	public String userRegistInput(@ModelAttribute UserForm form) {
+	public String userRegistInput( Model model) {
+		if (!model.containsAttribute("userForm")) {
+			model.addAttribute("userForm", new UserForm());
+			return "user/regist/user_regist_input";
+		}
 		return "user/regist/user_regist_input";
 	}
+	
 	
 	//確認画面から「戻る」ボタンを押したときに発動
 	@RequestMapping(path="/user/regist/input", method=RequestMethod.POST)
@@ -44,10 +50,15 @@ public class UserRegistCustomerController {
 	
 	//入力内容の確認。
 	@RequestMapping(path="/user/regist/check", method=RequestMethod.POST)
-	public String userDoRegistInput(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session, Model model){
-		//エラーがある場合は前の入力画面に戻る。
-		if(result.hasErrors()) {
-			return "user/regist/user_regist_input";
+	public String userDoRegistInput(@Valid @ModelAttribute UserForm form, BindingResult result, HttpSession session, Model model, RedirectAttributes redirectAttributes){
+//		//エラーがある場合は前の入力画面に戻る。
+		
+		if (result.hasErrors()) {
+			// 入力チェック結果の情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userForm", result);
+			// Form クラスの情報をフラッシュスコープに保存
+			redirectAttributes.addFlashAttribute("userForm", form);
+			return "redirect:/user/regist/input";
 		}
 		//エラーが無い場合は確認画面に遷移する。
 		return "user/regist/user_regist_check";
