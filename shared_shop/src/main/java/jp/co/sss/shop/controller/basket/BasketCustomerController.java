@@ -201,7 +201,7 @@ public class BasketCustomerController {
 
 				BasketBean bean=stockChangerWithListAdding(id,orderNum);
 
-				items.add(bean);
+				items.add(0,bean);
 
 				box[0] = items;
 
