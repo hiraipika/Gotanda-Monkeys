@@ -13,59 +13,76 @@
 		<div th:if="${#lists.isEmpty(session.orderItem)}">
 			<p th:text="#{basketList.none}"></p>
 		</div>
-		
-		<!-- 在庫数を超過したときのエラーメッセージ 
+
+		<!-- 在庫数を超過したときのエラーメッセージ>
 		<div th:each="orderItem: ${session.orderItem}">
 			<p th:if="${orderItem.stock < orderItem.orderNum}" th:text="${orderItem.name} + #{basketList.itemStockNone}"></p>
 		</div> -->
-		
-			<p th:text="${err}">在庫数を超過した注文はできません。</p>
-		 
-		<!-- 「買い物かご」の出力 -->
+
+		<p th:text="${err}">在庫数を超過した注文はできません。</p>
+		<div th:each="orderItem: ${session.orderItem}">
+			<p th:if="${orderItem.stock - orderItem.orderNum  < 0}" th:text="${orderItem.name} + #{basketList.not.none}"></p>
+		</div>
+
 		<div>
 			<table th:if="!${#lists.isEmpty(session.orderItem)}" class="list_table basket">
-		
+
 				<tr>
 					<th>商品名</th>
 					<th>数</th>
 					<th>操作</th>
 					<th>在庫</th>
 				</tr>
-			
+
 				<tr th:each="orderItem: ${session.orderItem}">
-	
+
 					 <td><a th:href="@{/item/detail/{id}(id=${orderItem.id})}" th:text="${orderItem.name}"> </a></td>
-	
+
 					<td th:text="${orderItem.orderNum}"></td>
-	
+
 	          		<td>
 		            	<form th:action="@{/basket/delete}" method="post">
 							 <input type="hidden" name="id" th:value="${orderItem.id}"  />
 							<input type="submit" value="削除"  class="delete" />
 						</form>
 		            </td>
-	            	<!-- 
+	            	<!--
 					<td>
 						 <div th:if="${#lists.isEmpty(session.orderItem)}">
 							<span th:text="#{basketList.itemStockNone}"></span>
 					    </div>
-				
-			    	</td>  -->
-			    	 <td th:text="${orderItem.stock}"></td>
+
+			    	</td> <td th:text="${orderItem.stock}"></td>
+						<dt>在庫：</dt>  -->
+
+                    <!-- 在庫数が0の場合(message:在庫なし) -->
+					<td th:if="${orderItem.stock <= 0}">
+					在庫なし
+					</td>
+
+					<!-- 在庫数が0でない、または在庫数が6以上(message:1~5の在庫の数) -->
+					<td th:if="${{orderItem.stock > 0 && orderItem.stock < 6}}">
+					<p th:text="${orderItem.stock}"></p>
+					</td>
+
+					<!-- 在庫数が0でない、または1以上5以下ではない(message:在庫あり) -->
+					<td th:if="${{orderItem.stock >= 6}}">
+					在庫あり
+					</td>
 				</tr>
 			</table>
 		</div>
-		
+
 <div th:if="!${#lists.isEmpty(session.orderItem)}">
      	<form th:action="@{/address/input}" method="post">
      		<input type="hidden" name="id" th:value="${session.orderNum}" >
 			<input type="submit" value="ご注文のお手続き" class="radio_label" />
 		</form>
-			
+
 		<form th:action="@{/basket/allDelete}" method="get">
 		<input type="submit" value="買い物かごを空にする" class="delete" />
 		</form>
-		
+
 </div>
 
 
