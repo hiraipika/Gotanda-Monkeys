@@ -11,22 +11,22 @@ public class CategoryBean {
 	 * カテゴリID
 	 */
 	private Integer id;
-	
+
 	/**
 	 * カテゴリ名
 	 */
 	private String name;
-	
+
 	/**
 	 * カテゴリ説明
 	 */
 	private String description;
-	
+
 	/**
 	 * 削除フラグ 0:未削除、1:削除済み
 	 */
 	private Integer deleteFlag;
-	
+
 	/**
 	 * 登録日付
 	 */
